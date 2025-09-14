@@ -1,0 +1,41 @@
+spring:
+  application:
+    #微服务名称
+    name: gate-server
+  cloud:
+    nacos:
+      server-addr: 192.168.194.147:8848
+      username: nacos
+      password: nacos
+      #naocs注册中心心
+      discovery:
+        namespace: 4f22dcd4-713f-4c84-9ba1-e43ebd32cd88
+        group: A_GROUP
+        server: ${spring.application.name}
+      #nacos配置中心
+      config:
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+        group: ${spring.cloud.nacos.discovery.group}
+        prefix: ${spring.application.name}
+        file-extension: yml
+  profiles:
+    #多环境配置
+    active: dev
+
+#######################
+
+#server:
+#  #服务端口号，网关默认为80
+#  port: 80
+#spring:
+#  cloud:
+#    gateway:
+#      discovery:
+#        #开启gateway动态路由，从nacos注册中心获取服务列表获取服务名称，然后动态路由到相关服务
+#        locator:
+#          enabled: true
+#  redis:
+#    host: 192.168.194.147:8848
+#    port: 6379
+
+
