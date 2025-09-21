@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.hncu</groupId>
+    <groupId>com.hncu</groupId>
     <artifactId>power-mail</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
@@ -32,6 +32,7 @@
         <druid.version>1.2.18</druid.version>
         <hutool-all.version>5.8.2</hutool-all.version>
         <springfox.version>3.0.0</springfox.version>
+        <common-base.version>1.0-SNAPSHOT</common-base.version>
     </properties>
 
 
@@ -120,6 +121,13 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-boot-starter</artifactId>
                 <version>${springfox.version}</version>
+            </dependency>
+
+            <!--公共基础模块依赖-->
+            <dependency>
+                <groupId>com.hncu</groupId>
+                <artifactId>common-base</artifactId>
+                <version>${common-base.version}</version>
             </dependency>
 
         </dependencies>

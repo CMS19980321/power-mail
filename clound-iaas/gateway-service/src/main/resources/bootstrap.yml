@@ -18,9 +18,12 @@ spring:
         group: ${spring.cloud.nacos.discovery.group}
         prefix: ${spring.application.name}
         file-extension: yml
+
   profiles:
     #多环境配置
     active: dev
+
+
 
 #######################
 
@@ -37,5 +40,10 @@ spring:
 #  redis:
 #    host: 192.168.194.147:8848
 #    port: 6379
+gateway:
+  white:
+    allow-urls:
+      - /doLogin  # 该路劲为项目的登录路径
+      - /free #样例路径
 
 
