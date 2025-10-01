@@ -1,13 +1,18 @@
 package com.hncu.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hncu.config.WhiteUrlsConfig;
 import com.hncu.constant.AuthConstants;
+import com.hncu.constant.BusinessEnum;
 import com.hncu.constant.HttpConstant;
+import com.hncu.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -89,12 +94,33 @@ public class AuthFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         //设置想要头的信息
         response.getHeaders().set(HttpConstant.CONTENT_TYPE,HttpConstant.APPLICATION_JSON);
+        //设置响应消息
+        Result<Result> result = Result.fail(BusinessEnum.UN_AUTHORIZATION);
+        //创建一个objectMapper对象
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        return null;
+        byte[] bytes;
+
+        try {
+             bytes = objectMapper.writeValueAsBytes(result);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        /*
+        * response.bufferFactory().wrap(bytes): 这行代码创建了一个 DataBuffer 对象。
+        * DataBuffer 是Spring WebFlux中的一个接口，用于处理二进制数据缓冲区。
+        * response.bufferFactory() 获取响应对象的缓冲区工厂，然后使用 wrap(bytes)
+        * 方法将字节数组包装成一个 DataBuffer 对象
+        * */
+        DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
+
+        return response.writeWith(Mono.just(dataBuffer));
+
+
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return -5;
     }
 }

@@ -1,5 +1,6 @@
 package com.hncu.model;
 
+import com.hncu.constant.BusinessEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -45,10 +46,25 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public static <T> Result<T> fail(Integer code,String msg,T data){
+    /**
+     * 操作失败
+     * @param code
+     * @param msg
+     * @return
+     * @param <T>
+     */
+    public static <T> Result<T> fail(Integer code,String msg){
         Result result = new Result<>();
         result.setCode(code);
         result.setMsg(msg);
+        result.setData(null);
+        return result;
+    }
+
+    public  static <T> Result<T> fail(BusinessEnum businessEnum){
+        Result result = new Result<>();
+        result.setCode(businessEnum.getCode());
+        result.setMsg(result.getMsg());
         result.setData(null);
         return result;
     }
