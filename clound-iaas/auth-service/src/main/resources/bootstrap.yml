@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: auth-server #微服务名称
+  cloud:
+    nacos:
+      server-addr: 192.168.194.147:8848
+      username: nacos
+      password: nacos
+      discovery: #配置nacos注册中心
+        namespace: 4f22dcd4-713f-4c84-9ba1-e43ebd32cd88
+        group: A_GROUP
+        service: ${spring.application.name}
+      config: #配置nacos配置中心
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+        group: ${spring.cloud.nacos.discovery.group}
+        prefix: ${spring.application.name}
+        file-extension: yml
+        shared-configs: #配置共享配置文件
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles: #多环节配置
+    active: dev
+
+##############naocs远程配置中心配置内容##########################
+#server:
+#  port: 9999
+##############naocs远程配置中心，项目公共配置配置文件内容#########################
+#spring:
+#  datasource: #配置连接数据库
+#    druid:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://192.168.194.147:3306/mail?useSSL=false&serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+#      username: root
+#      password: 111
+#  redis: #配置redis
+#    host: 192.168.194.147:8848
+#    port: 6379
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher #指定路径配置策略
+#    format:
+#      date: yyyy-MM-dd:HH:mm:ss
+#  jackson:
+#    date-format: yyyy-MM-dd:HH:mm:ss
+#    time-zone: GMT+8
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:/mapper/**/*.xml
+
+

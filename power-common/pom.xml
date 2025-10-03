@@ -12,6 +12,7 @@
     <artifactId>power-common</artifactId>
     <modules>
         <module>common-code</module>
+        <module>common-base</module>
     </modules>
 
     <properties>

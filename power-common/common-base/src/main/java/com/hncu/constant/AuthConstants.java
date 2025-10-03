@@ -23,5 +23,17 @@ public interface AuthConstants {
     * */
     String LOGIN_TOKEN_PREFIX = "login_token";
 
+    /**
+     * 登录url
+     */
+
+    String LOGIN_URL = "doLogin";
+
+    /**
+     * 登出Url
+     */
+
+    String LOGOUT_URL = "doLogout";
+
 
 }
