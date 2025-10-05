@@ -32,8 +32,22 @@ public interface AuthConstants {
     /**
      * 登出Url
      */
-
     String LOGOUT_URL = "doLogout";
+
+    /**
+     * 登录类型
+     */
+    String LOGIN_TYPE = "loginType";
+
+    /**
+     * 登录类型值:商城后台管理系统用户
+     */
+    String SYS_USER_LOGIN = "sysUserLogin";
+
+    /**
+     * 登录类型值:商城用户购物系统用户
+     */
+    String MEMBER_LOGIN = "memberLogin";
 
 
 }

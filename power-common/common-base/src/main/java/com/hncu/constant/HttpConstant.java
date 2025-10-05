@@ -16,4 +16,9 @@ public interface HttpConstant {
     * */
     String APPLICATION_JSON = "application/json;charset=utf-8";
 
+    /**
+     * UTF8字符编码
+     */
+    String UTF_8 = "utf-8";
+
 }

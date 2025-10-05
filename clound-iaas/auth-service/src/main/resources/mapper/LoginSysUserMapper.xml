@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hncu.mapper.LoginSysUserMapper">
+  <resultMap id="BaseResultMap" type="com.hncu.domain.LoginSysUser">
+    <!--@mbg.generated-->
+    <!--@Table sys_user-->
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    user_id, username, `password`, `status`,shop_id
+  </sql>
+
+  <select id="selectPermsByUserId" resultType="java.lang.String">
+    SELECT
+      sm.perms
+    FROM
+      sys_menu sm
+        JOIN sys_role_menu srm ON sm.menu_id = srm.menu_id
+        JOIN sys_user_role sur ON srm.role_id = sur.role_id
+    WHERE
+      sur.user_id = #{userId}
+      AND sm.type = 2
+
+  </select>
+</mapper>

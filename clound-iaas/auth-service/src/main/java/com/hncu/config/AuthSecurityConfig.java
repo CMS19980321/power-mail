@@ -1,6 +1,7 @@
 package com.hncu.config;
 
 import com.hncu.constant.AuthConstants;
+import com.hncu.constant.HttpConstant;
 import com.hncu.service.impl.UserDetailServiceImpl;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -20,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @Author caimeisahng
@@ -74,6 +77,12 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
         return (request, response, authentication) -> {
+            //设置响应头信息
+            response.setContentType(HttpConstant.CONTENT_TYPE);
+            response.setCharacterEncoding(HttpConstant.UTF_8);
+            //使用UUID当作token
+            String token = UUID.randomUUID().toString();
+            //从security框架中获取认证用户对象
 
         };
     }
@@ -97,6 +106,15 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
         return (request, response, authentication) -> {
 
         };
+    }
+
+    /**
+     * 密码加密器配置
+     * @return
+     */
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 
