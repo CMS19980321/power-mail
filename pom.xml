@@ -33,6 +33,8 @@
         <hutool-all.version>5.8.2</hutool-all.version>
         <springfox.version>3.0.0</springfox.version>
         <common-base.version>1.0-SNAPSHOT</common-base.version>
+        <!--<common-core.version>1.0-SNAPSHOT</common-core.version>-->
+        <fastjson.version>1.2.80</fastjson.version>
         <easyexcel.version>3.3.2</easyexcel.version>
     </properties>
 
@@ -129,6 +131,12 @@
                 <groupId>com.hncu</groupId>
                 <artifactId>common-base</artifactId>
                 <version>${common-base.version}</version>
+            </dependency>
+            <!--fastjson依赖-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <!--easyexcel依赖-->
