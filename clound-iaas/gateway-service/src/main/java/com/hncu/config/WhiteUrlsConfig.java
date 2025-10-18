@@ -35,6 +35,6 @@ public class WhiteUrlsConfig {
     /*
     * 放行的路径的集合
     * */
-    private List<String> allowsUrls;
+    private List<String> allowUrls;
 
 }

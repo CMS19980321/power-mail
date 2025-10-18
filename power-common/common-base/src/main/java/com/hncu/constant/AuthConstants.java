@@ -27,12 +27,12 @@ public interface AuthConstants {
      * 登录url
      */
 
-    String LOGIN_URL = "doLogin";
+    String LOGIN_URL = "/doLogin";
 
     /**
      * 登出Url
      */
-    String LOGOUT_URL = "doLogout";
+    String LOGOUT_URL = "/doLogout";
 
     /**
      * 登录类型

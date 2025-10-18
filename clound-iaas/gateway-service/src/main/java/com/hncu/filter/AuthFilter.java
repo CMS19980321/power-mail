@@ -65,7 +65,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         String path = request.getPath().toString();
 
         //判断当前路径是否存在白名单中
-        if (whiteUrlsConfig.getAllowsUrls().contains(path)) {
+        if (whiteUrlsConfig.getAllowUrls().contains(path)) {
             //存在:请求在白名单中，直接放行
             return chain.filter(exchange);
         }

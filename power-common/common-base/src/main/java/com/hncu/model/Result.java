@@ -64,7 +64,7 @@ public class Result<T> implements Serializable {
     public  static <T> Result<T> fail(BusinessEnum businessEnum){
         Result result = new Result<>();
         result.setCode(businessEnum.getCode());
-        result.setMsg(result.getMsg());
+        result.setMsg(businessEnum.getDesc());
         result.setData(null);
         return result;
     }

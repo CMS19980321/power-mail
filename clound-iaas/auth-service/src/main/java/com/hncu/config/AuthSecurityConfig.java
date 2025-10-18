@@ -18,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +37,7 @@ import java.util.UUID;
  * @Version 1.0
  * Security安全框架配置类
  */
+
 
 @Configuration
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -130,6 +132,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return
      */
 
+
+    @Bean
     public AuthenticationFailureHandler authenticationFailureHandler(){
         return (request, response, exception) -> {
             //设置响应头信息
@@ -153,6 +157,14 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                 result.setMsg(BusinessEnum.OPERATION_FAIL.getDesc());
             }
 
+            //返回结果
+            ObjectMapper objectMapper = new ObjectMapper();
+            String s = objectMapper.writeValueAsString(result);
+            PrintWriter writer = response.getWriter();
+            writer.write(s);
+            writer.flush();
+            writer.close();
+
         };
     }
 
@@ -160,6 +172,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
      * 登出成功处理器
      * @return
      */
+
+    @Bean
     public LogoutSuccessHandler logoutSuccessHandler(){
         return (request, response, authentication) -> {
             //设置响应头信息

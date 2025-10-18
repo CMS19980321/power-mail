@@ -1,6 +1,7 @@
 package com.hncu.fatory;
 
 import com.hncu.strategy.LoginStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -15,6 +16,13 @@ import java.util.Map;
 
 @Component
 public class LoginStrategyFactory {
+
+
+    /**
+     * @Autowired 用于告诉 Spring 自动将一个 Map<string, loginstrategy=""> 类型的
+     * Bean 注入到 loginStrategyMap 变量中。
+     */
+    @Autowired
     private Map<String, LoginStrategy> loginStrategyMap = new HashMap<>();
 
 
