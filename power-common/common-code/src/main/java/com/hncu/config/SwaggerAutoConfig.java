@@ -1,0 +1,71 @@
+package com.hncu.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+
+import java.util.HashSet;
+
+/**
+ * @Author caimeisahng
+ * @Date 2025/10/26 20:48
+ * @Version 1.0
+ * swagger自动装配类
+ */
+
+@Configuration
+@EnableConfigurationProperties(SwaggerProperties.class)
+public class SwaggerAutoConfig {
+    @Autowired
+    private SwaggerProperties swaggerProperties;
+
+    /**
+     * 环境变量
+     */
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    public Docket docket(){
+        Boolean flag = true;
+        String[] activeProfiles = environment.getActiveProfiles();
+
+        for (String activeProfile : activeProfiles) {
+            if ("pro".equals(activeProfile)) {
+                flag =false;
+                break;
+            }
+        }
+        return new Docket(DocumentationType.OAS_30)
+                .apiInfo(getApiInfo())
+                .enable(flag)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage())).build();
+    }
+
+    private ApiInfo getApiInfo() {
+        return new ApiInfo(
+                swaggerProperties.getTitle(),
+                swaggerProperties.getDescription(),
+                swaggerProperties.getVersion(),
+                swaggerProperties.getTermsOFServiceUrl(),
+                new Contact(
+                        swaggerProperties.getName(),
+                        swaggerProperties.getUrl(),
+                        swaggerProperties.getEmail()
+                ),
+                swaggerProperties.getLicense(),
+                swaggerProperties.getLicenseUrl(),
+                new HashSet<>()
+        );
+    }
+
+
+}

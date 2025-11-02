@@ -19,8 +19,10 @@ public class LoginStrategyFactory {
 
 
     /**
-     * @Autowired 用于告诉 Spring 自动将一个 Map<string, loginstrategy=""> 类型的
-     * Bean 注入到 loginStrategyMap 变量中。
+     * 这段代码的主要功能是通过 Spring 自动装配机制，将所有 LoginStrategy 类型的 Bean 收集到一个 Map 中，
+     * 以便 LoginStrategyFactory 可以根据不同的登录类型来获取相应的策略对象。
+     * 这样做不仅简化了对象的管理和获取过程，还提高了代码的可扩展性和灵活性，
+     * 使得不同的登录策略可以轻松地添加和维护。
      */
     @Autowired
     private Map<String, LoginStrategy> loginStrategyMap = new HashMap<>();
