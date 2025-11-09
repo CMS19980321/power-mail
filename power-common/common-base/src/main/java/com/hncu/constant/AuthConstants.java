@@ -66,5 +66,10 @@ public interface AuthConstants {
      */
     Long TOKEN_TIME = 14400L;
 
+    /**
+     * token的阈值，3600秒(一个小时)
+     */
+    Long TOKEN_EXPIRE_THRESHOLD_TIME = 60*60L;
+
 
 }

@@ -55,12 +55,12 @@
             <groupId>com.hncu</groupId>
             <artifactId>common-base</artifactId>
             <!--排除当前依赖中指定的依赖-->
-            <!--<exclusions>
+            <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-security</artifactId>
                 </exclusion>
-            </exclusions>-->
+            </exclusions>
         </dependency>
     </dependencies>
 

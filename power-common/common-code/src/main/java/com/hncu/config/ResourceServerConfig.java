@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hncu.constant.BusinessEnum;
 import com.hncu.constant.HttpConstant;
 import com.hncu.constant.ResourceConstants;
+import com.hncu.filter.TokenTranslationFilter;
 import com.hncu.model.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,14 +14,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.annotation.Resource;
 import java.io.PrintWriter;
 
 /**
@@ -33,6 +32,10 @@ import java.io.PrintWriter;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private TokenTranslationFilter tokenTranslationFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         /**
@@ -43,15 +46,21 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
          * 这可能会使应用程序更容易受到CSRF攻击，但在某些情况下，例如API服务，可能会选择禁用CSRF防护，
          * 因为它通常不适用于这种场景。
          */
+        System.out.println(">>> ResourceServerConfig loaded successfully <<<");
+
+        //关闭跨域请求
+        http.cors().disable();
         //关闭跨站请求伪造
         http.csrf().disable();
         /**
          * 禁用CORS通常是因为应用程序不需要支持跨域请求，或者通过其他方式处理了跨域问题。
          */
-        //关闭跨域请求
-        http.cors().disable();
+
         //关闭session策略
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //编以恶搞token解析过滤器，将token转换未security框架能够认证的用户信息，再存放到资源服务器(具体的服务)中
+        http.addFilterBefore(tokenTranslationFilter, UsernamePasswordAuthenticationFilter.class);
 
         //配置处理携带token但权限不足的请求
         http.exceptionHandling()
@@ -70,7 +79,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         return (request, response, authException) -> {
             //设置响应头的信息
             response.setContentType(HttpConstant.APPLICATION_JSON);
-            request.setCharacterEncoding(HttpConstant.UTF_8);
+            response.setCharacterEncoding(HttpConstant.UTF_8);
 
             //创建项目庭院响应结果对象并输出
             Result<Object> fail = Result.fail(BusinessEnum.UN_AUTHORIZATION);
@@ -89,12 +98,12 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         return (request, response, accessDeniedException) -> {
             //设置响应头的信息
             response.setContentType(HttpConstant.APPLICATION_JSON);
-            request.setCharacterEncoding(HttpConstant.UTF_8);
+            response.setCharacterEncoding(HttpConstant.UTF_8);
 
             //创建项目庭院响应结果对象并输出
             Result<Object> result = Result.fail(BusinessEnum.ACCESS_DENY_FAIL);
             ObjectMapper objectMapper = new ObjectMapper();
-            String s = objectMapper.writeValueAsString(request);
+            String s = objectMapper.writeValueAsString(result);
             PrintWriter writer = response.getWriter();
             writer.write(s);
             writer.flush();
