@@ -1,13 +1,13 @@
 package com.hncu.service.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.powernode.mapper.SysUserRoleMapper;
-import com.powernode.domain.SysUserRole;
-import com.powernode.service.SysUserRoleService;
+import com.hncu.domain.SysUserRole;
+import com.hncu.mapper.SysUserRoleMapper;
+import com.hncu.service.SysUserRoleService;
+import org.springframework.stereotype.Service;
+
+
 @Service
-public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService{
+public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
 
 }

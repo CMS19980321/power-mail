@@ -9,7 +9,6 @@ import com.hncu.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +17,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.annotation.Resource;
 import java.io.PrintWriter;
 
 /**
@@ -46,7 +44,6 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
          * 这可能会使应用程序更容易受到CSRF攻击，但在某些情况下，例如API服务，可能会选择禁用CSRF防护，
          * 因为它通常不适用于这种场景。
          */
-        System.out.println(">>> ResourceServerConfig loaded successfully <<<");
 
         //关闭跨域请求
         http.cors().disable();
@@ -59,7 +56,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         //关闭session策略
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        //编以恶搞token解析过滤器，将token转换未security框架能够认证的用户信息，再存放到资源服务器(具体的服务)中
+        //token解析过滤器，将token转换未security框架能够认证的用户信息，再存放到资源服务器(具体的服务)中
         http.addFilterBefore(tokenTranslationFilter, UsernamePasswordAuthenticationFilter.class);
 
         //配置处理携带token但权限不足的请求

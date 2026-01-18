@@ -41,6 +41,6 @@ public class FeignInterception implements RequestInterceptor {
 
         }
         //没有的情况下给一个固定值
-        requestTemplate.header(AuthConstants.AUTHORIZATION,AuthConstants.BEARER + "login_token602fe644-95e2-4c89-9e9b-73b044beca9c");
+        requestTemplate.header(AuthConstants.AUTHORIZATION,AuthConstants.BEARER + "144856a9-01a7-4a53-b2d1-da454f267095");
     }
 }

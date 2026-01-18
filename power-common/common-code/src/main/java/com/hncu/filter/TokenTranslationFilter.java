@@ -66,7 +66,7 @@ public class TokenTranslationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token)) {
                 //解决token续签的问题
                 //从redis中获取token的存活时长
-                Long expire = stringRedisTemplate.getExpire(AuthConstants.LOGIN_TOKEN_PREFIX + "token");
+                Long expire = stringRedisTemplate.getExpire(AuthConstants.LOGIN_TOKEN_PREFIX + token);
                 //判断token是否超过系统指定阈值
                 if (expire < AuthConstants.TOKEN_EXPIRE_THRESHOLD_TIME) {
                     //给当前用户的token续期(增加token在redis中存活时长)

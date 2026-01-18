@@ -1,8 +1,6 @@
-server:
-  port: 8081
 spring:
   application:
-    name: manager-server
+    name: manager-service
   cloud:
     nacos:
       server-addr: 192.168.194.147:8848

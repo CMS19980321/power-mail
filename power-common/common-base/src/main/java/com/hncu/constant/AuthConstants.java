@@ -11,7 +11,7 @@ public interface AuthConstants {
     *
     * */
 
-    String AUTHORIZATION = "authorization";
+    String AUTHORIZATION = "Authorization";
 
     /*
     * token值的前缀
@@ -21,7 +21,7 @@ public interface AuthConstants {
     /*
     * token值存放在redis中的前缀
     * */
-    String LOGIN_TOKEN_PREFIX = "login_token";
+    String LOGIN_TOKEN_PREFIX = "login_token:";
 
     /**
      * 登录url

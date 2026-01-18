@@ -19,6 +19,12 @@ import javax.servlet.http.HttpServletRequest;
  * @Author caimeisahng
  * @Date 2025/10/3 20:45
  * @Version 1.0
+ * 也就是说UserDetailsService接口用来加载用户信息，
+ * 之后再封装成Spring Security能够识别的数据UserDetails对象，
+ * 供Spring Security进行身份验证和授权操作。
+ * 也就是说UserDetailsService接口用来加载用户信息，
+ * 之后再封装成Spring Security能够识别的数据UserDetails对象，
+ * 供Spring Security进行身份验证和授权操作。
  *
  */
 

@@ -79,6 +79,7 @@ public class SysMenu implements Serializable {
 
 
     // 子节点集合
+    // mybatisPlus注解:@TableField(exist = false) 当前字段无表映射字段
     @TableField(exist = false)
     @ApiModelProperty("子节点集合")
     private Set<SysMenu> list;
