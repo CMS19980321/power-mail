@@ -6,6 +6,7 @@ import com.hncu.mapper.SysMenuMapper;
 import com.hncu.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+//缓存命名空间，注意保持唯一性
 @CacheConfig(cacheNames = "com.powernode.service.impl.SysMenuServiceImpl")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
@@ -20,6 +22,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private SysMenuMapper sysMenuMapper;
 
     @Override
+    @Cacheable(key = "#loginUserId") //指定缓存中的key值，注意保证唯一性
     public Set<SysMenu> queryUserMenuListByUserId(Long loginUserId) {
         Set<SysMenu> menus = sysMenuMapper.selectUserMenuListByUserId(loginUserId);
         //将菜单权限集合的数据转换为树结构(即:数据结构应该为层级关系)，方便前端处理

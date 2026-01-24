@@ -1,0 +1,67 @@
+package com.hncu.controller;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.SysUser;
+import com.hncu.model.Result;
+import com.hncu.service.SysUserService;
+import com.hncu.util.AuthUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @Author caimeisahng
+ * @Date 2026/1/24 3:29
+ * @Version 1.0
+ * 系统管理员控制层
+ */
+
+
+@Api(tags = "系统管理员接口管理")
+@RequestMapping("sys/user")
+@RestController
+public class SysUserController {
+
+    @Autowired
+    private SysUserService sysUserService;
+
+    @ApiOperation("查询登录的用户信息")
+    @GetMapping("info")
+    public Result<SysUser> loadxxx(){
+        // 获取登录的用户标识
+        Long userId = AuthUtils.getLoginUserId();
+        //根据用户标识查询用户信息
+        SysUser sysUser = sysUserService.getById(userId);
+        return Result.success(sysUser);
+    }
+
+    /*
+    * 这段代码使用Spring Security的权限注解，`
+    * @PreAuthorize("hasAuthority(xx)")`用于在方法执行前检查当前用户是否具有指定的权限（xx），
+    * 只有拥有该权限的用户才能访问此接口，否则会抛出权限不足异常。
+    * */
+    @ApiOperation("系统管理员多条件分页查询")
+    @GetMapping("page")
+    @PreAuthorize("hasAuthority('sys:role:page')")
+    public Result<Page<SysUser>> loadSysUserPage(@RequestParam Long current,
+                                          @RequestParam Long size,
+                                          @RequestParam(required = false) String username ){
+        //创建mybatisPlus的分页对象
+        Page<SysUser> page = new Page<>(current, size);
+
+        //多条件分页查询系统管理员
+        page = sysUserService.page(page,new LambdaQueryWrapper<SysUser>()
+                .like(StringUtils.hasText(username),SysUser::getUsername,username)
+                .orderByDesc(SysUser::getCreateTime)
+        );
+
+        return Result.success(page);
+    }
+}
