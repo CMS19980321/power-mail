@@ -11,8 +11,10 @@ import com.hncu.service.SysUserRoleService;
 import com.hncu.service.SysUserService;
 import com.hncu.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +33,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired
     private SysUserRoleService sysUserRoleService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     /**
      * 1.新增管理员
      * 2.新增管理员与角色的关系，方法中涉及多个数据库操作使用
@@ -46,6 +51,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setCreateUserId(AuthUtils.getLoginUserId());
         sysUser.setCreateTime(new Date());
         sysUser.setShopId(1L); //店铺id目前只有一个
+        //密码加密
+        sysUser.setPassword(bCryptPasswordEncoder.encode(sysUser.getPassword()));
         int i = sysUserMapper.insert(sysUser);
         if (i > 0) {
             //获取管理员标识
@@ -100,13 +107,68 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return sysUser;
     }
 
+    /**
+     * 修改管理员信息
+     * 1.删除原有的管理员与角色关系记录
+     * 2.添加新的管理员与角色的关系记录
+     * 3.修改管理员信息
+     * @param sysUser
+     * @return
+     */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer modifySysUserInfo(SysUser sysUser) {
-        return null;
+        //获取管理员标识(userId)
+        Long userId = sysUser.getUserId();
+        //删除原有的管理员与角色关系记录
+        sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, userId)
+        );
+        //添加管理员与角色关系记录
+        //获取管理员的角色id的集合
+        List<Long> roleIdList = sysUser.getRoleIdList();
+        //创建管理员与角色的关系集合
+        ArrayList<SysUserRole> sysUserRoleList = new ArrayList<>();
+        //判断是否有值
+        if (CollectionUtil.isNotEmpty(roleIdList) && roleIdList.size() != 0){
+            // 循环遍历角色id的结合
+            for (Long roleId : roleIdList) {
+                //创建管理员与角色的关系
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUserId(userId);
+                sysUserRole.setRoleId(roleId);
+                //注意:不推荐在循环中操作数据库
+                //sysUserRoleMapper.insert(sysUserRole);
+                sysUserRoleList.add(sysUserRole);
+            }
+            //批量添加管理员与角色的关系
+            sysUserRoleService.saveBatch(sysUserRoleList);
+        }
+        //修改管理员信息
+        //获取新密码(如果有值:说明管理员修改了密码，如果没有值:说明原密码不变)
+        String newPassword = sysUser.getPassword();
+        //判断是否有值
+        if (StringUtils.hasText(newPassword)) {
+            //有值，说明需要修改原密码
+            sysUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        }
+
+        return sysUserMapper.updateById(sysUser);
     }
 
+    /**
+     * 批量/单个删除管理员
+     * 1.批量/单个删除管理员与角色的关系记录
+     * 2.批量/单个删除管理员
+     * @param userIds
+     * @return
+     */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean removeSysUserListByUserIds(List<Long> userIds) {
-        return null;
+        //批量/单个删除管理员与角色的关系记录
+        sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .in(SysUserRole::getUserId,userIds));
+        return sysUserMapper.deleteBatchIds(userIds) == userIds.size();
     }
 }

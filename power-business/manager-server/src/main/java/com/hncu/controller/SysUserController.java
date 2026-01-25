@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/1/24 3:29
@@ -81,5 +83,21 @@ public class SysUserController {
     public Result<SysUser> loadSysUserInfo(@PathVariable Long id){
         SysUser sysUser = sysUserService.querySysUserInfoByUserId(id);
         return Result.success(sysUser);
+    }
+
+    @ApiOperation("修改管理员信息")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('sys:user:update')")
+    public Result<String> modifySusUserInfo(@RequestBody SysUser sysUser){
+        Integer count = sysUserService.modifySysUserInfo(sysUser);
+        return Result.handle(count>0);
+    }
+
+    @ApiOperation("批量/单个删除管理员")
+    @DeleteMapping("{userIds}")
+    @PreAuthorize("hasAuthority('sys:user:delete')")
+    public Result<String> removeSysUsesrs(@PathVariable List<Long> userIds){
+        Boolean removed = sysUserService.removeSysUserListByUserIds(userIds);
+        return Result.handle(removed);
     }
 }
