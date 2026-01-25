@@ -82,7 +82,8 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value="用户所在的商城Id")
     private Long shopId;
 
-    ///////////////// 新增管理员   ///////////////////
+
+    ///////////////// 新增管理员:表中无对应字段分割线   ///////////////////
     @TableField(exist = false)
     @ApiModelProperty("角色id集合")
     private List<Long> roleIdList;
