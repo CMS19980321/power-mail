@@ -31,6 +31,11 @@ public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
 
+    /**
+     * 查询登录的用户信息
+     * @return
+     */
+
     @ApiOperation("查询登录的用户信息")
     @GetMapping("info")
     public Result<SysUser> loadxxx(){
@@ -46,6 +51,14 @@ public class SysUserController {
     * @PreAuthorize("hasAuthority(xx)")`用于在方法执行前检查当前用户是否具有指定的权限（xx），
     * 只有拥有该权限的用户才能访问此接口，否则会抛出权限不足异常。
     * */
+
+    /**
+     * 系统管理员多条件分页查询
+     * @param current 页码
+     * @param size 每页显示条数
+     * @param username 管理员名称
+     * @return
+     */
     @ApiOperation("系统管理员多条件分页查询")
     @GetMapping("page")
     @PreAuthorize("hasAuthority('sys:role:page')")
@@ -66,7 +79,8 @@ public class SysUserController {
 
 
     /**
-     * 新增管理员接口
+     * 新增管理员
+     * @param sysUser 系统管理员对象
      * @return
      */
     @ApiOperation("新增管理员")
@@ -77,6 +91,11 @@ public class SysUserController {
         return Result.handle(count > 0);
     }
 
+    /**
+     * 根据标识查询系统管理员信息
+     * @param id 管理员标识
+     * @return
+     */
     @ApiOperation("根据标识查询系统管理员信息")
     @GetMapping("info/{id}")
     @PreAuthorize("hasAuthority('sys:role:info')")
@@ -85,6 +104,11 @@ public class SysUserController {
         return Result.success(sysUser);
     }
 
+    /**
+     * 修改管理员信息
+     * @param sysUser 系统管理员对象
+     * @return
+     */
     @ApiOperation("修改管理员信息")
     @PutMapping("")
     @PreAuthorize("hasAuthority('sys:user:update')")
@@ -92,6 +116,12 @@ public class SysUserController {
         Integer count = sysUserService.modifySysUserInfo(sysUser);
         return Result.handle(count>0);
     }
+
+    /**
+     * 批量/单个删除管理员
+     * @param userIds 管理员标识集合
+     * @return
+     */
 
     @ApiOperation("批量/单个删除管理员")
     @DeleteMapping("{userIds}")

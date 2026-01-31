@@ -13,4 +13,9 @@ public interface ManagerConstants {
      */
     String SYS_ALL_ROLE_KEY = "'role'";
 
+    /**
+     * 系统所有菜单存放到Redis中的key
+     */
+    String SYS_ALL_MENU_KEY = "'menus'";
+
 }

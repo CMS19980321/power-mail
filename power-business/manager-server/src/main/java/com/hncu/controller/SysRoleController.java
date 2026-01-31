@@ -1,5 +1,7 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.SysRole;
 import com.hncu.model.Result;
 import com.hncu.service.SysRoleService;
@@ -7,9 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class SysRoleController {
 
     @Autowired
     private SysRoleService sysRoleService;
+
+    /**
+     * 查询系统所有角色
+     * @return
+     */
     @ApiOperation("查询系统所有角色")
     @GetMapping("list")
     @PreAuthorize("hasAuthority('sys:role:list')")
@@ -34,5 +40,60 @@ public class SysRoleController {
         List<SysRole> roleList = sysRoleService.querySysRoleList();
 
         return Result.success(roleList);
+    }
+
+    /**
+     *
+     * @param current 页码
+     * @param size 每页显示条数
+     * @param roleName 角色名称
+     * @return
+     */
+
+    @ApiOperation("多条件分页查询角色列表")
+    @GetMapping("page")
+    @PreAuthorize("hasAuthority('sys:role:page')")
+    public Result<Page<SysRole>> loadSysRolePage(@RequestParam Long current,
+                                        @RequestParam Long size,
+                                        @RequestParam(required = false) String roleName ){
+
+        //创建分页对象
+        Page<SysRole> page = new Page<>(current,size);
+        //多条件分页查询角色列表
+        page = sysRoleService.page(page, new LambdaQueryWrapper<SysRole>()
+                .like(StringUtils.hasText(roleName), SysRole::getRoleName, roleName)
+                .orderByDesc(SysRole::getCreateTime));
+        return Result.success(page);
+    }
+
+
+    @ApiOperation("新增角色")
+    @PostMapping("")
+    @PreAuthorize("hasAuthority('sys:role:save')")
+    public Result<String> saveSysRole(@RequestBody SysRole sysRole){
+        Boolean saved = sysRoleService.saveSysRole(sysRole);
+
+        return Result.handle(saved);
+    }
+
+    /**
+     *
+     * @param roleId 角色标识
+     * @return
+     */
+    @ApiOperation("根据标识查询角色详情")
+    @GetMapping("info/{roleId}")
+    @PreAuthorize("hasAuthority('sys:role:info')")
+    public Result<SysRole> loadSysRoleInfo(@PathVariable Long roleId){
+        SysRole sysRole = sysRoleService.querySysRoleInfoByRoleId(roleId);
+        return Result.success(sysRole);
+    }
+
+    @ApiOperation("修改角色信息")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('sys:role:update')")
+    public Result<String> modifySysRole(@RequestBody SysRole sysRole){
+        Boolean updated = sysRoleService.modifySysRole(sysRole);
+        return Result.handle(updated);
     }
 }

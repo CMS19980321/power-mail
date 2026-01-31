@@ -1,6 +1,7 @@
 package com.hncu.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hncu.constant.ManagerConstants;
 import com.hncu.domain.SysMenu;
 import com.hncu.mapper.SysMenuMapper;
 import com.hncu.service.SysMenuService;
@@ -84,8 +85,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    @Cacheable(key = ManagerConstants.SYS_ALL_MENU_KEY)
     public List<SysMenu> queryAllSysMenuList() {
-        return null;
+
+        return sysMenuMapper.selectList(null);
     }
 
     @Override
