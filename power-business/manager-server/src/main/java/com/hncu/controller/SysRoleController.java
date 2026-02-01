@@ -89,11 +89,29 @@ public class SysRoleController {
         return Result.success(sysRole);
     }
 
+    /**
+     * 修改角色信息
+     * @param sysRole
+     * @return
+     */
     @ApiOperation("修改角色信息")
     @PutMapping("")
     @PreAuthorize("hasAuthority('sys:role:update')")
     public Result<String> modifySysRole(@RequestBody SysRole sysRole){
         Boolean updated = sysRoleService.modifySysRole(sysRole);
         return Result.handle(updated);
+    }
+
+    /**
+     * 批量/单个删除角色
+     * @param roleIdList 角色id集合
+     * @return
+     */
+    @ApiOperation("批量/单个删除角色")
+    @DeleteMapping("")
+    @PreAuthorize("hasAuthority('sys:role:delete')")
+    public Result<String> removeSysRole(@RequestBody List<Long> roleIdList ){
+        Boolean removed = sysRoleService.removeSysRoleListByIds(roleIdList);
+        return Result.handle(removed);
     }
 }

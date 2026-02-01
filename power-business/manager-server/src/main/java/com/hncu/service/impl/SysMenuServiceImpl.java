@@ -7,6 +7,7 @@ import com.hncu.mapper.SysMenuMapper;
 import com.hncu.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -92,15 +93,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    @CacheEvict(key = ManagerConstants.SYS_ALL_MENU_KEY)
     public Boolean saveSysMenu(SysMenu sysMenu) {
-        return null;
+        return sysMenuMapper.insert(sysMenu) > 0;
     }
 
     @Override
+    @CacheEvict(key = ManagerConstants.SYS_ALL_MENU_KEY)
     public Boolean modifySysMenu(SysMenu sysMenu) {
-        return null;
+        //获取菜单类型
+        Integer type = sysMenu.getType();
+        if (0 == type) {
+            //修改当前权限类型为目录，父级菜单手动设置为0
+            sysMenu.setParentId(0L);
+        }
+        return sysMenuMapper.updateById(sysMenu) > 0;
     }
 
+    
     @Override
     public Boolean removeSysMenuById(Long menuId) {
         return null;

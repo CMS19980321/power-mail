@@ -11,9 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -63,5 +61,52 @@ public class SysMenuController {
     public Result<List<SysMenu>> loadAllSysMenuList(){
         List<SysMenu> list = sysMenuService.queryAllSysMenuList();
         return Result.success(list);
+    }
+
+    /**
+     * 新增权限
+     * @param sysMenu 系统权限对象
+     * @return
+     */
+    @ApiOperation("新增权限")
+    @PostMapping
+    @PreAuthorize("hasAuthority('sys:menu:save')")
+    public Result<String> saveSysMenu(@RequestBody SysMenu sysMenu){
+        Boolean saved = sysMenuService.saveSysMenu(sysMenu);
+        return Result.handle(saved);
+    }
+
+    /**
+     * 根据标识查询菜单权限信息
+     * @param menuId 菜单权限标识
+     * @return
+     */
+    @ApiOperation("根据标识查询菜单权限信息")
+    @GetMapping("info/{menuId}")
+    @PreAuthorize("hasAuthority('sys:menu:info')")
+    public Result<SysMenu> loadSysMenuInfo(@PathVariable Long menuId){
+        SysMenu sysMenu = sysMenuService.getById(menuId);
+        return Result.success(sysMenu);
+    }
+
+    /**
+     *
+     * @param sysMenu 系统权限对象
+     * @return
+     */
+    @ApiOperation("修改菜单权限信息")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('sys:menu:update')")
+    public Result<String> modifySysMenu(@RequestBody SysMenu sysMenu){
+        Boolean modified = sysMenuService.modifySysMenu(sysMenu);
+        return Result.handle(modified);
+    }
+
+    @ApiOperation("删除菜单权限")
+    @DeleteMapping("{menuId}")
+    @PreAuthorize("hasAuthority('sys:menu:delete')")
+    public Result<String> removeSysMenu(@PathVariable Long menuId){
+        Boolean removed = sysMenuService.removeSysMenuById(menuId);
+        return Result.handle(removed);
     }
 }
