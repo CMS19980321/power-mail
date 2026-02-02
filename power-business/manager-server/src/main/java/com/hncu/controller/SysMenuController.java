@@ -2,7 +2,6 @@ package com.hncu.controller;
 
 import com.hncu.domain.SysMenu;
 import com.hncu.model.Result;
-import com.hncu.model.SecurityUser;
 import com.hncu.service.SysMenuService;
 import com.hncu.util.AuthUtils;
 import com.hncu.vo.MenuAndAuth;
@@ -10,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -102,6 +100,11 @@ public class SysMenuController {
         return Result.handle(modified);
     }
 
+    /**
+     * 删除菜单权限
+     * @param menuId 菜单权限标识
+     * @return
+     */
     @ApiOperation("删除菜单权限")
     @DeleteMapping("{menuId}")
     @PreAuthorize("hasAuthority('sys:menu:delete')")

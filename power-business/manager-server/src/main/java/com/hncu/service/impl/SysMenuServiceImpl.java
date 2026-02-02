@@ -1,8 +1,11 @@
 package com.hncu.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hncu.constant.ManagerConstants;
 import com.hncu.domain.SysMenu;
+import com.hncu.ex.handler.BusinessException;
 import com.hncu.mapper.SysMenuMapper;
 import com.hncu.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,9 +113,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return sysMenuMapper.updateById(sysMenu) > 0;
     }
 
-    
+    /**
+     * 如果当前菜单节点包含子节点，不可删除
+     * @param menuId
+     * @return
+     */
     @Override
+    @CacheEvict(key = ManagerConstants.SYS_ALL_MENU_KEY)
     public Boolean removeSysMenuById(Long menuId) {
-        return null;
+        // 根据菜单标识查询子菜单集合
+        List<SysMenu> sysMenuList = sysMenuMapper.selectList(new LambdaQueryWrapper<SysMenu>()
+                .eq(SysMenu::getParentId, menuId));
+
+        //判断子菜单集合是否有值
+        if (CollectionUtil.isNotEmpty(sysMenuList) && sysMenuList.size() != 0 ) {
+            throw new BusinessException("当前菜单节点包含子节点集合，不可删除");
+        }
+
+        //当前菜单集合不包含子菜单集合，可以删除
+        return sysMenuMapper.deleteById(menuId) > 0;
     }
 }
