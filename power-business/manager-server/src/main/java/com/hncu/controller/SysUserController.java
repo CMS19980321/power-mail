@@ -38,7 +38,7 @@ public class SysUserController {
 
     @ApiOperation("查询登录的用户信息")
     @GetMapping("info")
-    public Result<SysUser> loadxxx(){
+    public Result<SysUser> loadSysUserInfo(){
         // 获取登录的用户标识
         Long userId = AuthUtils.getLoginUserId();
         //根据用户标识查询用户信息

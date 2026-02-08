@@ -14,7 +14,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Date;
 
@@ -39,7 +38,7 @@ public class SysLogAspect {
      * 切入点表达式
      * execution n.（尤指遗嘱的）执行
      */
-    public static final String POINT_CUT = "execution (* com/hncu/controller.*.*(..)) ";
+    public static final String POINT_CUT = "execution (* com.hncu.controller.*.*(..))";
 
     @Around(value = POINT_CUT)
     /*在Java的AOP（面向切面编程）中，ProceedingJoinPoint 是一个重要的接口，
@@ -86,7 +85,7 @@ public class SysLogAspect {
 
         String finalArgs =  "";
         // 判断参数类型
-        if (ObjectUtil.isNotNull(args) && args[0] instanceof MultipartFile) {
+        if (ObjectUtil.isNotNull(args) && args.length !=0 && args[0] instanceof MultipartFile) {
             // 说明当前参数为文件对象
             finalArgs = "file";
         } else {
@@ -107,9 +106,9 @@ public class SysLogAspect {
         long endTime = System.currentTimeMillis();
 
         //方法的执行时长
-        long execTime = startTime - endTime;
+        long execTime = endTime - startTime;
 
-        log.info("调用时间:{},请求接口路径:{},请求IP地址:{},方法名称:{},执行时长:{}，方法秒送:{}",
+        log.info("调用时间:{},请求接口路径:{},请求IP地址:{},方法名称:{},执行时长:{}，方法名称:{}",
                 new Date(),
                 path,
                 remoteHost,

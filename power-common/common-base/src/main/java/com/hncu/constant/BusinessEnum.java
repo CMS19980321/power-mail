@@ -8,7 +8,7 @@ package com.hncu.constant;
 public enum BusinessEnum {
 
     OPERATION_FAIL(-1,"操作失败"),
-    SERVER_INNER_ERROR(9999,"服务颞部异常"),
+    SERVER_INNER_ERROR(9999,"服务异常"),
 
     UN_AUTHORIZATION(401,"未授权"),
 
