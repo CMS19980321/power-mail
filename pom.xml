@@ -36,6 +36,7 @@
         <common-core.version>1.0-SNAPSHOT</common-core.version>
         <fastjson.version>1.2.80</fastjson.version>
         <easyexcel.version>3.3.2</easyexcel.version>
+        <aliyun-sdk-oss.version>3.15.1</aliyun-sdk-oss.version>
     </properties>
 
 
@@ -146,10 +147,18 @@
                 <version>${easyexcel.version}</version>
             </dependency>
 
+            <!--公共核心业务模块依赖-->
             <dependency>
                 <groupId>com.hncu</groupId>
                 <artifactId>common-code</artifactId>
                 <version>${common-core.version}</version>
+            </dependency>
+
+            <!--阿里云对象存储服务-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-sdk-oss.version}</version>
             </dependency>
 
         </dependencies>
