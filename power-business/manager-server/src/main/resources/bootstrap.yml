@@ -36,8 +36,3 @@ spring:
 #  terms-of-service-url: https://www.hncu.com
 #  version: 1.0
 #aliyun:
-#  oss:
-#    endpoint: oss-cn-beijing.aliyuncs.com
-#    bucketName: powermail-shop
-#    accessKeyId: LTAI5tKDU8HL7ErUYf9oLpsR
-#    accessKeySecret: 5sXQ3yd2n6ZHfLxaZzmkVKLMTrVJsR
