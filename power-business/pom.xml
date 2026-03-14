@@ -12,6 +12,7 @@
     <artifactId>power-business</artifactId>
     <modules>
         <module>manager-server</module>
+        <module>product-service</module>
     </modules>
 
     <properties>
