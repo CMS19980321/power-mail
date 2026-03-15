@@ -1,6 +1,6 @@
 spring:
   application:
-    name: manager-service
+    name: product-service
   cloud:
     nacos:
       server-addr: 192.168.194.147:8848
