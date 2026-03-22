@@ -22,7 +22,7 @@ import java.util.Date;
  * 文件上传控制层
  */
 @Api(tags = "文件上传接口管理")
-@RequestMapping("xxxx")
+@RequestMapping("admin/file")
 @RestController
 public class FileUploadController {
 
