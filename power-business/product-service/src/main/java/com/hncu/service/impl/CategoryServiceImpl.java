@@ -9,9 +9,12 @@ import com.hncu.mapper.CategoryMapper;
 import com.hncu.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,8 +43,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(key = ProductConstant.FIRST_CATEGORY_LIST_KEY),
+            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY)
+    })
     public Boolean saveCategory(Category category) {
-        return null;
+        category.setCreateTime(new Date());
+        category.setUpdateTime(new Date());
+        return categoryMapper.insert(category) > 0;
     }
 
     @Override
