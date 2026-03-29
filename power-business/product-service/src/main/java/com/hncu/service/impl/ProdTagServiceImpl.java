@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,12 +22,15 @@ public class ProdTagServiceImpl extends ServiceImpl<ProdTagMapper, ProdTag> impl
 
     @Override
     public Boolean saveProdTag(ProdTag prodTag) {
-        return null;
+        prodTag.setCreateTime(new Date());
+        prodTag.setUpdateTime(new Date());
+        return prodTagMapper.insert(prodTag) > 0;
     }
 
     @Override
     public Boolean modifyProdTag(ProdTag prodTag) {
-        return null;
+        prodTag.setUpdateTime(new Date());
+        return prodTagMapper.updateById(prodTag) > 0;
     }
 
     @Override
