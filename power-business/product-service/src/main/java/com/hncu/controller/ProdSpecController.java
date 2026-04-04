@@ -1,10 +1,16 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.ProdProp;
+import com.hncu.model.Result;
 import com.hncu.service.ProdPropService;
 import io.swagger.annotations.Api;
-import org.checkerframework.checker.units.qual.A;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,4 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProdSpecController {
     @Autowired
     private ProdPropService prodPropService;
+
+    @ApiOperation("多条件查询分页查询接口")
+    @GetMapping("page")
+    @PreAuthorize("hasAuthority('prod:spec:page')")
+    public Result<Page<ProdProp>> loadProdSpecPage(@RequestParam Long current,
+                                                   @RequestParam Long size,
+                                                   @RequestParam(required = false) String propName){
+        //多条件分页查询商品规格
+        Page<ProdProp> page = prodPropService.queryProdSpecPage(current, size, propName);
+
+        return Result.success(page);
+    }
 }
