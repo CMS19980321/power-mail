@@ -6,6 +6,9 @@ import com.hncu.mapper.ProdCommMapper;
 import com.hncu.service.ProdCommService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
 
 @Service
 public class ProdCommServiceImpl extends ServiceImpl<ProdCommMapper, ProdComm> implements ProdCommService {
@@ -14,4 +17,15 @@ public class ProdCommServiceImpl extends ServiceImpl<ProdCommMapper, ProdComm> i
     private ProdCommMapper prodCommMapper;
 
 
+    @Override
+    public Boolean replayAndExamineProdComm(ProdComm prodComm) {
+        //获取商品的评论内容
+        String content = prodComm.getContent();
+        //判断评论内容是否有值
+        if (StringUtils.hasText(content)) {
+            prodComm.setReplyTime(new Date());
+            prodComm.setReplySts(1);
+        }
+        return prodCommMapper.updateById(prodComm ) > 0;
+    }
 }

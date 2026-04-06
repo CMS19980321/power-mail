@@ -11,10 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author caimeisahng
@@ -54,5 +51,26 @@ public class ProdCommController {
                 .orderByDesc(ProdComm::getCreateTime)
         );
         return Result.success(page);
+    }
+
+    /**
+     * 根据标识查询商品评论详情
+     * @param id 商品评论详情标识
+     * @return
+     */
+    @ApiOperation("根据标识查询商品评论详情")
+    @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('prod:prodComm:page')")
+    public Result<ProdComm> loadInfo(@PathVariable Long id){
+        ProdComm prodComm = prodCommService.getById(id);
+        return Result.success(prodComm);
+    }
+
+    @ApiOperation("回复与审核评论")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('prod:prodComm:update')")
+    public Result<String> replayAndExamineProdComm(@RequestBody ProdComm prodComm){
+        Boolean flag = prodCommService.replayAndExamineProdComm(prodComm);
+        return Result.success(null);
     }
 }

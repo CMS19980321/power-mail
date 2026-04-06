@@ -6,4 +6,5 @@ import com.hncu.domain.ProdComm;
 
 public interface ProdCommService extends IService<ProdComm> {
 
+    Boolean replayAndExamineProdComm(ProdComm prodComm);
 }
