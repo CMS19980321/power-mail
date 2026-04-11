@@ -1,14 +1,19 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.ProdProp;
+import com.hncu.domain.ProdPropValue;
 import com.hncu.model.Result;
 import com.hncu.service.ProdPropService;
+import com.hncu.service.ProdPropValueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author caimeisahng
@@ -23,6 +28,9 @@ import org.springframework.web.bind.annotation.*;
 public class ProdSpecController {
     @Autowired
     private ProdPropService prodPropService;
+
+    @Autowired
+    private ProdPropValueService prodPropValueService;
 
     /**
      *
@@ -81,5 +89,28 @@ public class ProdSpecController {
     public Result<String> removeProdSpec(@PathVariable Long prodId){
         Boolean removed = prodPropService.removeProdSpecByPropId(prodId);
         return Result.handle(removed);
+    }
+
+    @ApiOperation("查询系统商品属性的集合")
+    @GetMapping("list")
+    @PreAuthorize("hasAuthority('prod:spec:page')")
+    public Result<List<ProdProp>> loadProdPropList(){
+        List<ProdProp> prodProps = prodPropService.queryProdPropList();
+        return Result.success(prodProps);
+    }
+
+    /**
+     * 根据商品属性id查询属性值集合
+     * @param propId
+     * @return
+     */
+    @ApiOperation("根据商品属性id查询属性值集合")
+    @GetMapping("listSpecValue/{propId}")
+    @PreAuthorize("hasAuthority('prod:spec:page')")
+    public Result<List<ProdPropValue>> loadProdPropValues(@PathVariable Long propId){
+        List<ProdPropValue> prodPropValues = prodPropValueService.list(new LambdaQueryWrapper<ProdPropValue>()
+                .eq(ProdPropValue::getPropId,propId)
+        );
+        return Result.success(prodPropValues);
     }
 }

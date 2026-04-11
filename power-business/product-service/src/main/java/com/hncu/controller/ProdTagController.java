@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  *
  * @Author caimeisahng
@@ -105,5 +107,17 @@ public class ProdTagController {
     public Result<String> removeProdTag(@PathVariable Long tagId){
         boolean removed = prodTagService.removeById(tagId);
         return Result.handle(removed);
+    }
+
+    /**
+     * 查询状态正常的商品分组标签集合
+     * @return
+     */
+    @ApiOperation("查询状态正常的商品分组标签集合")
+    @GetMapping("listTagList")
+    @PreAuthorize("hasAuthority('prod:prodTag:page')")
+    public Result<List<ProdTag>> loadProdTagList(){
+        List<ProdTag> prodTags = prodTagService.queryProdTagList();
+        return Result.success(prodTags);
     }
 }

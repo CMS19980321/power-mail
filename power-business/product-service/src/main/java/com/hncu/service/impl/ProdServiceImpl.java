@@ -40,7 +40,23 @@ public class ProdServiceImpl extends ServiceImpl<ProdMapper, Prod> implements Pr
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveProd(Prod prod) {
+        //新增商品
+        prod.setProdId(1L);
+        prod.setSoldNum(0);
+        prod.setCreateTime(new Date());
+        prod.setUpdateTime(new Date());
+        prod.setPutawayTime(new Date());
+        prod.setVersion(0);
+        Prod.DeliveryModeVo deliveryModeVo = prod.getDeliveryModeVo();
+        prod.setDeliveryMode(JSONObject.toJSONString(deliveryModeVo));
+        int insert = prodMapper.insert(prod);
+        //prod表插入数据成功
+        if (insert > 0) {
+
+        }
+
         return null;
     }
 
