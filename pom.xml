@@ -19,6 +19,7 @@
         <module>clound-iaas</module>
         <module>power-business</module>
         <module>power-common</module>
+        <module>power-business/store-service</module>
     </modules>
 
     <properties>

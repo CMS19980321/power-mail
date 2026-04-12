@@ -55,6 +55,11 @@ public class ProdController {
         return Result.success(page);
     }
 
+    /**
+     * 新增商品
+     * @param prod 商品对象
+     * @return
+     */
     @ApiOperation("新增商品")
     @PostMapping("")
     @PreAuthorize("hasAuthority('prod:prod:save')")
@@ -62,4 +67,40 @@ public class ProdController {
         Boolean saved = prodService.saveProd(prod);
         return Result.handle(saved);
     }
+
+    /**
+     * 根据标识查询商品详情
+     * @param prodId
+     * @return
+     */
+    @ApiOperation("根据标识查询商品详情")
+    @GetMapping("info/{prodId}")
+    @PreAuthorize("hasAuthority('prod:prod:info')")
+    public Result<Prod> loadProdInfo(@PathVariable Long prodId){
+        Prod prod = prodService.queryProdInfoById(prodId);
+        return Result.success(prod);
+    }
+
+    /**
+     * 修改商品信息
+     * @return prod 商品对象
+     */
+    @ApiOperation("修改商品信息")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('prod:prod:update')")
+    public Result<String> modifyProdInfo(@RequestBody Prod prod){
+        Boolean modified = prodService.modifyProdInfo(prod);
+        return Result.handle(modified);
+    }
+
+
+
+    @ApiOperation("删除商品")
+    @DeleteMapping("{prodId}")
+    @PreAuthorize("hasAuthority('prod:prod:delete')")
+    public Result<String> removeProd(@PathVariable Long prodId){
+        Boolean removed = prodService.removeProdById(prodId);
+        return Result.handle(removed);
+    }
+
 }
