@@ -1,11 +1,11 @@
 spring:
   application:
-    name: product-service
+    name: store-service
   cloud:
     nacos:
       server-addr: 192.168.194.147:8848
       username: nacos
-      password: nacos
+      password:  nacos
       discovery:
         namespace: 4f22dcd4-713f-4c84-9ba1-e43ebd32cd88
         group: A_GROUP
@@ -21,16 +21,17 @@ spring:
     active: dev
 
 #server:
-#  port: 8081
+#  port: 8083
 #swagger3:
 #  base-package: com.hncu.controller
 #  name: hncu
 #  url: https://www.hncu.com
 #  email: hncu@126.com
-#  title: 后台管理系统-产品管理模块接口
-#  description: 实现后台管理系统的所有接口,根路径/product-service
+#  title: 后台管理系统-门店管理模块接口
+#  description: 实现后台管理系统的所有接口,根路径/store-service
 #  license: vincent
 #  licenseUrl: https://www.hncu.com
 #  terms-of-service-url: https://www.hncu.com
 #  version: 1.0
+
 
