@@ -26,7 +26,10 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
 
     @Override
     public Boolean saveNotice(Notice notice) {
-        return null;
+        notice.setShopId(1L);
+        notice.setCreateTime(new Date());
+        notice.setUpdateTime(new Date());
+        return noticeMapper.insert(notice) > 0;
     }
 
     @Override

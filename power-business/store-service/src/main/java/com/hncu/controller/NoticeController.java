@@ -1,0 +1,71 @@
+package com.hncu.controller;
+
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.Notice;
+import com.hncu.model.Result;
+import com.hncu.service.NoticeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * @Author caimeisahng
+ * @Date 2026/5/3 19:53
+ * @Version 1.0
+ * 公共业务管理控制层
+ */
+
+@Api(tags = "公告业务接口管理")
+@RequestMapping("shop/notice")
+@RestController
+public class NoticeController {
+
+    @Autowired
+    private NoticeService noticeService;
+
+    /**
+     *
+     * @param current 当前页
+     * @param size 每页显示条数
+     * @param title 标题
+     * @param status 状态
+     * @param isTop 是否置顶
+     * @return
+     */
+    @ApiOperation("多条件分页查询公告列表")
+    @GetMapping("page")
+    @PreAuthorize("hasAuthority('shop:notice:page')")
+    public Result<Page<Notice>> loadNoticePage(@RequestParam Long current,
+                                               @RequestParam Long size,
+                                               @RequestParam(required = false) String title,
+                                               @RequestParam(required = false) Integer status,
+                                               @RequestParam(required = false) Integer isTop
+    ){
+        //创建分页对象
+        Page<Notice> page = new Page<>(current, size);
+        //多条件分页查询公告列表
+        page = noticeService.page(page,new LambdaQueryWrapper<Notice>()
+                .eq(ObjectUtil.isNotNull(status),Notice::getStatus,status)
+                .eq(ObjectUtil.isNotEmpty(isTop),Notice::getIsTop,isTop)
+                .like(StringUtils.hasText(title),Notice::getTitle,title)
+                .orderByDesc(Notice::getCreateTime)
+        );
+
+        return Result.success(page);
+    }
+
+
+    @ApiOperation("新增公告")
+    @PostMapping("")
+    @PreAuthorize("hasAuthority('shop:notice:page')")
+    public Result<String> saveNotice(@RequestBody Notice notice){
+        Boolean saved = noticeService.saveNotice(notice);
+
+        return Result.handle(saved);
+    }
+}
