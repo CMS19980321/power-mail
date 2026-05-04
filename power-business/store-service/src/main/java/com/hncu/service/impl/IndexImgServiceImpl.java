@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,7 +22,15 @@ public class IndexImgServiceImpl extends ServiceImpl<IndexImgMapper, IndexImg> i
 
     @Override
     public Boolean saveIndexImg(IndexImg indexImg) {
-        return null;
+        indexImg.setShopId(1L);
+        indexImg.setCreateTime(new Date());
+        //获取关联类型
+        Integer type = indexImg.getType();
+        if (type == -1) {
+            //轮播图未关联商品
+            indexImg.setProdId(-1L);
+        }
+        return indexImgMapper.insert(indexImg) > 0;
     }
 
     @Override

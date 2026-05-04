@@ -34,7 +34,8 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
 
     @Override
     public Boolean modifyNotice(Notice notice) {
-        return null;
+        notice.setUpdateTime(new Date());
+        return noticeMapper.updateById(notice) > 0;
     }
 
     @Override

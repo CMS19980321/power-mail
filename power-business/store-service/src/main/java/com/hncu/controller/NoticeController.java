@@ -68,4 +68,38 @@ public class NoticeController {
 
         return Result.handle(saved);
     }
+
+    /**
+     * 根据标识查询公告详情
+     * @param noticeId 公告id
+     * @return
+     */
+    @ApiOperation("根据标识查询公告详情")
+    @GetMapping("info/{noticeId}")
+    @PreAuthorize("hasAuthority('shop:notice:info')")
+    public Result<Notice> loadNoticeInfo(@PathVariable Long noticeId){
+        Notice notice = noticeService.getById(noticeId);
+        return Result.success(notice);
+    }
+
+    /**
+     * 修改公告内容
+     * @param notice 公告对象
+     * @return
+     */
+    @ApiOperation("修改公告内容")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('shop:notice:update')")
+    public Result<String> modifyNotice(@RequestBody Notice notice){
+        Boolean modified = noticeService.modifyNotice(notice);
+        return Result.handle(modified);
+    }
+
+    @ApiOperation("根据公告标识删除公告")
+    @DeleteMapping("{noticeId}")
+    @PreAuthorize("hasAuthority('shop:notice:delete')")
+    public Result<String> removeNotice(@PathVariable Long noticeId){
+        boolean removed = noticeService.removeById(noticeId);
+        return Result.handle(removed);
+    }
 }
