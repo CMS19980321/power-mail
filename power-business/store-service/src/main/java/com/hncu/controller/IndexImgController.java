@@ -65,4 +65,12 @@ public class IndexImgController {
         Boolean saved = indexImgService.saveIndexImg(indexImg);
         return Result.handle(saved);
     }
+
+    @ApiOperation("根据标识查询轮播图信息")
+    @GetMapping("info/[imgId]")
+    @PreAuthorize("hasAuthority('admin:indexImg:info')")
+    public Result<IndexImg> loadIndexImgInfo(@PathVariable Long imgId){
+        IndexImg indexImg = indexImgService.queryIndexImgInfoById(imgId);
+        return Result.success(indexImg);
+    }
 }

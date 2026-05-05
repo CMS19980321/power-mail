@@ -35,9 +35,20 @@ public class IndexImgServiceImpl extends ServiceImpl<IndexImgMapper, IndexImg> i
 
     @Override
     public IndexImg queryIndexImgInfoById(Long imgId) {
+        //根据标识查询轮播图信息
+        IndexImg indexImg = indexImgMapper.selectById(imgId);
+        //获取轮播图关联类型
+        Integer type = indexImg.getType();
+        //判断关联商品
+        if (type == -1) {
+            //说明:轮播图已关联商品
+            //获取关联商品的id
+            Long prodId = indexImg.getProdId();
+
+        }
 
 
-        return null;
+        return indexImg;
     }
 
     @Override
