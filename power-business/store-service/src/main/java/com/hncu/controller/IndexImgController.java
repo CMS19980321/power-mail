@@ -67,7 +67,7 @@ public class IndexImgController {
     }
 
     @ApiOperation("根据标识查询轮播图信息")
-    @GetMapping("info/[imgId]")
+    @GetMapping("info/{imgId}")
     @PreAuthorize("hasAuthority('admin:indexImg:info')")
     public Result<IndexImg> loadIndexImgInfo(@PathVariable Long imgId){
         IndexImg indexImg = indexImgService.queryIndexImgInfoById(imgId);

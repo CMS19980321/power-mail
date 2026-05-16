@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/4/6 20:56
@@ -102,5 +104,13 @@ public class ProdController {
         Boolean removed = prodService.removeProdById(prodId);
         return Result.handle(removed);
     }
+
+    /*-------------------------feign接口--------------------------------------*/
+
+    @GetMapping("getProdListByIds")
+    Result<List<Prod>> getProdListByIds(@RequestParam List<Long> prodIdList){
+        List<Prod> prods = prodService.listByIds(prodIdList);
+        return Result.success(prods);
+    };
 
 }
