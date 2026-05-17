@@ -80,12 +80,12 @@ public class IndexImgServiceImpl extends ServiceImpl<IndexImgMapper, IndexImg> i
 
     @Override
     public Boolean modifyIndexImg(IndexImg indexImg) {
-        return null;
+        return indexImgMapper.updateById(indexImg) > 0;
     }
 
     @Override
     public Boolean removeIndexImgByIds(List<Long> imgIds) {
-        return null;
+        return indexImgMapper.deleteBatchIds(imgIds) ==  imgIds.size();
     }
 
     @Override

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/5/4 20:27
@@ -66,11 +68,42 @@ public class IndexImgController {
         return Result.handle(saved);
     }
 
+    /**
+     * 根据标识查询轮播图信息
+     * @param imgId
+     * @return
+     */
     @ApiOperation("根据标识查询轮播图信息")
     @GetMapping("info/{imgId}")
     @PreAuthorize("hasAuthority('admin:indexImg:info')")
     public Result<IndexImg> loadIndexImgInfo(@PathVariable Long imgId){
         IndexImg indexImg = indexImgService.queryIndexImgInfoById(imgId);
         return Result.success(indexImg);
+    }
+
+    /**
+     * 修改轮播图内容
+     * @param indexImg
+     * @return 轮播图对象
+     */
+    @ApiOperation("修改轮播图内容")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('admin:indexImg:update')")
+    public Result<String> modifyIndexImg(@RequestBody IndexImg indexImg){
+        Boolean modified = indexImgService.modifyIndexImg(indexImg);
+        return Result.handle(modified);
+    }
+
+    /**
+     * 批量删除轮播图
+     * @param imgIds 轮播图id集合
+     * @return
+     */
+    @ApiOperation("批量删除轮播图")
+    @DeleteMapping("")
+    @PreAuthorize("hasAuthority('admin:indexImg:delete')")
+    public Result<String> removeIndexImg(@RequestBody List<Long> imgIds){
+        Boolean removed = indexImgService.removeIndexImgByIds(imgIds);
+        return Result.handle(removed);
     }
 }
