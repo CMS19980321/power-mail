@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: order-service
+  cloud:
+    nacos:
+      server-addr: 192.168.194.147:8848
+      username: nacos
+      password:  nacos
+      discovery:
+        namespace: 4f22dcd4-713f-4c84-9ba1-e43ebd32cd88
+        group: A_GROUP
+        service: ${spring.application.name}
+      config:
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+        group: ${spring.cloud.nacos.discovery.group}
+        prefix: ${spring.application.name}
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
+
+
+##############远程配置文件内容#################
+#server:
+#  port: 8085
+#swagger3:
+#  base-package: com.hncu.controller
+#  name: hncu
+#  url: https://www.hncu.com
+#  email: hncu@126.com
+#  title: 后台管理系统-订单管理模块接口
+#  description: 实现后台管理系统的所有接口,根路径/member-service
+#  license: hncu
+#  licenseUrl: https://www.hncu.com
+#  terms-of-service-url: https://www.hncu.com
+#  version: 1.0

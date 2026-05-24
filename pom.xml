@@ -20,6 +20,7 @@
         <module>power-business</module>
         <module>power-common</module>
         <module>power-business/store-service</module>
+        <module>power-business/order-service</module>
     </modules>
 
     <properties>

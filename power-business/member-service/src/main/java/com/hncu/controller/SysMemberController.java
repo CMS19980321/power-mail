@@ -14,6 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/5/23 19:59
@@ -67,6 +71,40 @@ public class SysMemberController {
                 .eq(Member::getId, id)
         );
         return Result.success(member);
+    }
+
+
+    /**
+     * 修改会员状态
+     * @param member(id,status)
+     * @return
+     */
+
+    @ApiOperation("修改会员状态")
+    @PutMapping("")
+    @PreAuthorize("hasAuthority('admin:user:update')")
+    public Result<String> modifyMemberStatus(@RequestBody Member member){
+        member.setUpdateTime(new Date());
+        boolean update = memberService.updateById(member);
+        return Result.handle(update);
+    }
+
+    @ApiOperation("批量删除会员集合")
+    @DeleteMapping("")
+    @PreAuthorize("hasAuthority('admin:user:delete')")
+    public Result<String> removeMembers(@RequestBody List<Integer> ids){
+
+        ArrayList<Member> members = new ArrayList<>();
+        //循环遍历会员id的集合
+        ids.forEach(id -> {
+            Member member = new Member();
+            member.setId(id);
+            member.setStatus(-1);
+            members.add(member);
+        });
+
+        boolean removed = memberService.updateBatchById(members);
+        return Result.handle(removed);
     }
 
 
