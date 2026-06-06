@@ -1,5 +1,7 @@
 package com.hncu.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hncu.domain.Order;
@@ -10,6 +12,7 @@ import com.hncu.service.OrderService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -31,7 +34,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public Page<Order> queryOrderPage(Page<Order> page, String orderNumber, Integer status, Date startTime, Date endTime) {
-        return null;
+        //多条件分页查询订单
+        page = orderMapper.selectPage(page,new LambdaQueryWrapper<Order>()
+                .eq(ObjectUtil.isNotNull(status),Order::getStatus,status)
+                .between(ObjectUtil.isAllNotEmpty(startTime,endTime),Order::getCreateTime,startTime,endTime)
+                .eq(StringUtils.hasText(orderNumber),Order::getOrderNumber,orderNumber)
+                .orderByDesc(Order::getCreateTime)
+        );
+        return page;
     }
 
     @Override
