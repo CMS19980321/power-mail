@@ -106,6 +106,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         MemberAddr memberAddr = result.getData();
         order.setUserAddrOrder(memberAddr);
 
+        //远程接口调用，根据openId查询会员昵称
+
+
 
 
 

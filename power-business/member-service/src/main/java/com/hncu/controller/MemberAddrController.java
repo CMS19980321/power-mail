@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "会员收货地址接口管理")
 @RestController
-@RequestMapping("")
+@RequestMapping("p/address")
 public class MemberAddrController {
 
     @Autowired
