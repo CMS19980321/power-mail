@@ -1,5 +1,7 @@
-package com.hncu.order;
+package com.hncu.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.Order;
 import com.hncu.model.Result;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author caimeisahng
@@ -62,9 +65,29 @@ public class SysOrderController {
      */
     @ApiOperation("根据订单编号查询订单详情")
     @GetMapping("orderInfo/{orderNumber}")
-    @PreAuthorize("hasAuthority('order:order:page')")
+    @PreAuthorize("hasAuthority('order:order:info')")
     public Result<Order> loadOrderDetail(@PathVariable Long orderNumber){
         Order order = orderService.queryOrderDetailByOrderNumber(orderNumber);
         return Result.success(order);
+    }
+
+    /**
+     * 导出销售记录接口
+     * @return
+     */
+    @ApiOperation("导出销售记录")
+    @GetMapping("soldExcel")
+    @PreAuthorize("hasAuthority('order:order:soldExcel')")
+    public Result<String> exportSoleOrderRecordExcel(){
+        List<Order> list = orderService.list(new LambdaQueryWrapper<Order>()
+                .orderByDesc(Order::getCreateTime)
+        );
+        // 写法2
+        String fileName ="D:\\bjpowernode\\Excel\\"  + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, Order.class).sheet("模板111").doWrite(list);
+
+        return Result.success(null);
     }
 }

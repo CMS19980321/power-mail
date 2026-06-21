@@ -142,13 +142,6 @@
                 <version>${fastjson.version}</version>
             </dependency>
 
-            <!--easyexcel依赖-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-            </dependency>
-
             <!--公共核心业务模块依赖-->
             <dependency>
                 <groupId>com.hncu</groupId>
@@ -161,6 +154,13 @@
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${aliyun-sdk-oss.version}</version>
+            </dependency>
+
+            <!--easyexcel依赖-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
             </dependency>
 
         </dependencies>

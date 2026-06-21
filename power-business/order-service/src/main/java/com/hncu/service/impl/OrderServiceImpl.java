@@ -93,6 +93,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //根据订单编号查询订单商品条目对象集合
         List<OrderItem> orderItemList = orderItemMapper.selectList(new LambdaQueryWrapper<OrderItem>()
                 .eq(OrderItem::getOrderNumber, orderNumber));
+        order.setOrderItems(orderItemList);
         //从订单记录中获取订单收货标识
         Long addrOrderId = order.getAddrOrderId();
         //远程调用，根据守护地址标识查询地址详情
@@ -107,9 +108,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUserAddrOrder(memberAddr);
 
         //远程接口调用，根据openId查询会员昵称
-
-
-
+        Result<String> result12 = orderMemberFeign.getNickNameByOpenId(order.getOpenId());
+        if (result12.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new BusinessException("远程接口调用失败，根据会员openId查询会员昵称");
+        }
+        //获取数据
+        String nickName = result12.getData();
+        order.setNickName(nickName);
 
 
         return order;

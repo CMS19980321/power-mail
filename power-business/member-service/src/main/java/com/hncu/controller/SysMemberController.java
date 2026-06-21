@@ -8,7 +8,6 @@ import com.hncu.model.Result;
 import com.hncu.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -106,6 +105,17 @@ public class SysMemberController {
         boolean removed = memberService.updateBatchById(members);
         return Result.handle(removed);
     }
+
+/////////////////feign接口///////////////////////
+@GetMapping("getNickNameByOpenId")
+public Result<String> getNickNameByOpenId(@RequestParam String openId){
+    Member member = memberService.getOne(new LambdaQueryWrapper<Member>()
+            .select(Member::getNickName)
+            .eq(Member::getOpenId,openId)
+    );
+
+    return Result.success(member.getNickName());
+};
 
 
 }

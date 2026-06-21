@@ -23,6 +23,6 @@ public interface OrderMemberFeign {
     Result<MemberAddr> getMemberAddrById(@RequestParam Long addrId);
 
     @GetMapping("admin/user/getNickNameByOpenId")
-    Result<String> getNickNameByOpenId(@PathVariable String openId);
+    Result<String> getNickNameByOpenId(@RequestParam String openId);
 
 }
