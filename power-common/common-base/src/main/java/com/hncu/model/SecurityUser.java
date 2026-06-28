@@ -51,12 +51,13 @@ public class SecurityUser implements UserDetails {
     /**
      * 属性集合
      */
-    /*private Set<String> perms = new HashSet<>();*/
-    private Set<String> perms;
+    private Set<String> perms = new HashSet<>();
+    //private Set<String> perms;
 
 
 
     //商城购物系统会员的相关属性
+    private String openid;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

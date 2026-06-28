@@ -20,7 +20,13 @@ spring:
   profiles: #多环节配置
     active: dev
 
+
 ##############naocs远程配置中心配置内容##########################
+#wx:
+#  appid: wx7588f779cf8d5ca6
+#  secret: a323f0ad356d5d28f0dca7b8c83915b7
+#  url: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+#  pwd: $2a$10$3Ve707cMNiK8Y8znOJiHIuFLtHikEl.J8tMp6J9uZtwxFjy8VJRbC
 #server:
 #  port: 9999
 ##############naocs远程配置中心，项目公共配置配置文件内容#########################
