@@ -16,6 +16,8 @@ import com.hncu.mapper.OrderMapper;
 import com.hncu.model.Result;
 import com.hncu.service.OrderItemService;
 import com.hncu.service.OrderService;
+import com.hncu.util.AuthUtils;
+import com.hncu.vo.OrderStatusCount;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -140,6 +142,35 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public Boolean removeMemberOrderByOrderNumber(String orderNumber) {
         return null;
+    }
+
+    @Override
+    public OrderStatusCount queryMemberOrderStatusCount() {
+        //获取会员openid
+        String memberOpenId = AuthUtils.getMemberOpenId();
+        //根据会员openid查询待支付订单数量
+        Long unPay = orderMapper.selectCount(new LambdaQueryWrapper<Order>()
+                .eq(Order::getOpenId, memberOpenId)
+                .eq(Order::getStatus, 1)
+        );
+
+        //根据会员openid查询待待发货订单数量
+        Long payed = orderMapper.selectCount(new LambdaQueryWrapper<Order>()
+                .eq(Order::getOpenId, memberOpenId)
+                .eq(Order::getStatus, 2)
+        );
+
+        //根据会员openid查询待收货订单数量
+        Long consignment = orderMapper.selectCount(new LambdaQueryWrapper<Order>()
+                .eq(Order::getOpenId, memberOpenId)
+                .eq(Order::getStatus, 3)
+        );
+        return OrderStatusCount
+                .builder()
+                .unPay(unPay)
+                .payed(payed)
+                .consignment(consignment)
+                .build();
     }
 }
 

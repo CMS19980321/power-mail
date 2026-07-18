@@ -3,6 +3,7 @@ package com.hncu.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hncu.domain.Order;
+import com.hncu.vo.OrderStatusCount;
 
 import java.util.Date;
 
@@ -59,5 +60,5 @@ public interface OrderService extends IService<Order>{
     Boolean removeMemberOrderByOrderNumber(String orderNumber);
 
 
-
+    OrderStatusCount queryMemberOrderStatusCount();
 }
