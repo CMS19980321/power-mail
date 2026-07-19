@@ -18,11 +18,16 @@ import com.hncu.service.OrderItemService;
 import com.hncu.service.OrderService;
 import com.hncu.util.AuthUtils;
 import com.hncu.vo.OrderStatusCount;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Date;
 import java.util.List;
@@ -125,23 +130,87 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public Page<Order> queryMemberOrderPage(Long current, Long size, Long status) {
-        return null;
+        //获取会员openId
+        String openId = AuthUtils.getMemberOpenId();
+        //创建订单分页对象
+        Page<Order> page = new Page<>(current, size);
+        //分页查询订单会员列表
+        page = orderMapper.selectPage(page, new LambdaQueryWrapper<Order>()
+                .eq(Order::getOpenId,openId)
+                .eq(0 != status,Order::getStatus,status)
+                .eq(Order::getDeleteStatus,0)//查询未删除状态的订单
+                .orderByDesc(Order::getCreateTime)
+        );
+
+        //从订单分页对象中获取订单记录集合
+        List<Order> orderList = page.getRecords();
+        //判断是否有值
+        if (CollectionUtils.isEmpty(orderList)) {
+            return page;
+        }
+        //从订单集合中获取订单编号的集合
+        List<String> orderNumberList = orderList.stream().map(Order::getOrderNumber).collect(Collectors.toList());
+        //根据订单编号集合查询订单商品条目集合
+        List<OrderItem> orderItemList = orderItemMapper.selectList(new LambdaQueryWrapper<OrderItem>()
+                .in(OrderItem::getOrderNumber,orderNumberList)
+        );
+        //循环遍历订单集合
+        orderList.forEach(order -> {
+            //从所有商品条目对象集合中过滤出与当前订单订单编号一直的商品条目对象集合
+            List<OrderItem> itemList = orderItemList.stream().filter(orderItem -> orderItem.getOrderNumber().equals(order.getOrderNumber()))
+                    .collect(Collectors.toList());
+            order.setOrderItemDtos(itemList);
+        });
+        return page;
     }
 
     @Override
     public Order queryMemberOrderDetailByOrderNumber(String orderNumber) {
+        //根据订单编号查询订单信息
+        Order order = orderMapper.selectOne(new LambdaQueryWrapper<Order>()
+                .eq(Order::getOrderNumber,orderNumber)
+        );
+        //判断订单是否存在
+        if (ObjectUtil.isNull(order)) {
+            throw new BusinessException("订单编号不存在");
+        }
+        //远程调用，查询订单收货地址对象
+        Result<MemberAddr> result = orderMemberFeign.getMemberAddrById(order.getAddrOrderId());
+        if (BusinessEnum.OPERATION_FAIL.getCode().equals(result.getCode())) {
+            throw new BusinessException("查询订单收货地址失败");
+        }
+        //获取订单收货地址对象
+        MemberAddr memberAddr = result.getData();
+        order.setUserAddrDto(memberAddr);
+        //根据订单编号查询订单条目对象集合
+        List<OrderItem> orderItemList = orderItemMapper.selectList(new LambdaQueryWrapper<OrderItem>()
+                .eq(OrderItem::getOrderNumber,orderNumber)
+        );
 
-        return null;
+        order.setOrderItemDtos(orderItemList);
+        return order;
     }
 
     @Override
     public Boolean receiptMemberOrder(String orderNumber) {
-        return null;
+        //创建订单对象
+        Order order = new Order();
+        order.setUpdateTime(new Date());
+        order.setFinallyTime(new Date());
+        order.setStatus(5);//无待评价涉及，直接到已完成
+        return orderMapper.update(order,new LambdaQueryWrapper<Order>()
+                .eq(Order::getOrderNumber,orderNumber)
+        ) > 0;
     }
 
     @Override
     public Boolean removeMemberOrderByOrderNumber(String orderNumber) {
-        return null;
+        Order order = new Order();
+        order.setDeleteStatus(1);
+        order.setUpdateTime(new Date());
+        return orderMapper.update(order,new LambdaQueryWrapper<Order>()
+                .eq(Order::getOrderNumber,orderNumber)
+        )>0;
     }
 
     @Override
@@ -172,6 +241,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consignment(consignment)
                 .build();
     }
+
+
 }
 
 
