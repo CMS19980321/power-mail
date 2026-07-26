@@ -3,9 +3,13 @@ package com.hncu.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hncu.constant.BusinessEnum;
 import com.hncu.domain.MemberCollection;
 import com.hncu.domain.Prod;
+import com.hncu.ex.handler.BusinessException;
+import com.hncu.feign.MemberProdFeign;
 import com.hncu.mapper.MemberCollectionMapper;
+import com.hncu.model.Result;
 import com.hncu.service.MemberCollectionService;
 import com.hncu.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,9 @@ public class MemberCollectionServiceImpl extends ServiceImpl<MemberCollectionMap
 
     @Autowired
     private MemberCollectionMapper memberCollectionMapper;
+
+    @Autowired
+    private MemberProdFeign memberProdFeign;
 
 
     @Override
@@ -49,10 +56,16 @@ public class MemberCollectionServiceImpl extends ServiceImpl<MemberCollectionMap
             return prodPage;
         }
         //从会员与商品收藏关系对象集合中获取收藏商品id的集合
-        List<Long> prodList = memberCollectionList.stream().map(MemberCollection::getProdId).collect(Collectors.toList());
+        List<Long> prodIdList = memberCollectionList.stream().map(MemberCollection::getProdId).collect(Collectors.toList());
         //远程调用，根据商品id查询商品对象的集合
-
-
+        Result<List<Prod>> result = memberProdFeign.getProdListByIds(prodIdList);
+        if (BusinessEnum.OPERATION_FAIL.getCode().equals(result.getCode())) {
+            throw new BusinessException("远程调用:根据商品Id集合查询商品对象集合失败");
+        }
+        List<Prod> prodList = result.getData();
+        prodPage.setRecords(prodList);
+        prodPage.setTotal(memberCollectionPage.getTotal());
+        prodPage.setPages(memberCollectionPage.getPages());
 
         return prodPage;
     }

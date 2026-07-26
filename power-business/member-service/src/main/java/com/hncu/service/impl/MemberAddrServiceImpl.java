@@ -1,8 +1,6 @@
 package com.hncu.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hncu.domain.MemberAddr;
 import com.hncu.mapper.MemberAddrMapper;
@@ -14,7 +12,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 @Service
 @CacheConfig(cacheNames = "com.hncu.service.impl.MemberAddrServiceImpl")
@@ -26,7 +23,10 @@ public class MemberAddrServiceImpl extends ServiceImpl<MemberAddrMapper, MemberA
     @Override
     @Cacheable(key = "#openId")
     public List<MemberAddr> queryMemberAddrListByOpenId(String openId) {
-        return null;
+        return memberAddrMapper.selectList(new LambdaQueryWrapper<MemberAddr>()
+                .eq(MemberAddr::getOpenId,openId)
+                .orderByDesc(MemberAddr::getCommonAddr,MemberAddr::getCreateTime)
+        );
     }
 
     /**

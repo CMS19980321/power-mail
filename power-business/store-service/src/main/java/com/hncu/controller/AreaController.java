@@ -1,5 +1,6 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hncu.domain.Area;
 import com.hncu.model.Result;
 import com.hncu.service.AreaService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,6 +38,16 @@ public class AreaController {
     @PreAuthorize("hasAuthority('admin:area:list')")
     public Result<List<Area>> loadAllAreaList(){
         List<Area> areas = areaService.queryAllAreaList();
+        return Result.success(areas);
+    }
+
+    /////////////////////微信小程序接口/////////////////////////
+    @ApiOperation("根据地区父节点标识查询子节点集合")
+    @GetMapping("mall/listByPid")
+    public Result<List<Area>> loadMallAreaListById(@RequestParam Long pid){
+        List<Area> areas = areaService.list(new LambdaQueryWrapper<Area>()
+                .eq(Area::getParentId,pid)
+        );
         return Result.success(areas);
     }
 }
