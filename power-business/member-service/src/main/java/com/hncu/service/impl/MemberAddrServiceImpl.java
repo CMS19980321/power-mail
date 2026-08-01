@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 @Service
 @CacheConfig(cacheNames = "com.hncu.service.impl.MemberAddrServiceImpl")
@@ -40,7 +41,21 @@ public class MemberAddrServiceImpl extends ServiceImpl<MemberAddrMapper, MemberA
     @Override
     @CacheEvict(key = "#openId")
     public Boolean saveMemberAddr(MemberAddr memberAddr,String openId) {
-        return null;
+        memberAddr.setCommonAddr(0);
+        memberAddr.setStatus(1);
+        memberAddr.setCreateTime(new Date());
+        memberAddr.setUpdateTime(new Date());
+        memberAddr.setOpenId(openId);
+        //根据openId查询会员收货地址数量
+        Long count = memberAddrMapper.selectCount(new LambdaQueryWrapper<MemberAddr>()
+                .eq(MemberAddr::getOpenId,openId)
+        );
+        //判断会员是否有默认的会员收货地址
+        if (count == 0) {
+            //说明当前会员收货地址为第一个即默认的收货地址
+            memberAddr.setCommonAddr(1);
+        }
+        return memberAddrMapper.insert(memberAddr) > 0;
     }
 
     @Override

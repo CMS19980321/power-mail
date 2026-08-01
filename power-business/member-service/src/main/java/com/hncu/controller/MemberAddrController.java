@@ -8,10 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,6 +38,19 @@ public class MemberAddrController {
         String openId = AuthUtils.getMemberOpenId();
         List<MemberAddr> memberAddrs = memberAddrService.queryMemberAddrListByOpenId(openId);
         return Result.success(memberAddrs);
+    }
+
+    /**
+     *
+     * @param memberAddr 会员收货地址对象
+     * @return
+     */
+    @ApiOperation("新增收货地址")
+    @PostMapping("")
+    public Result<String> saveMemberAddr(@RequestBody MemberAddr memberAddr){
+        String openId = AuthUtils.getMemberOpenId();
+        Boolean saved = memberAddrService.saveMemberAddr(memberAddr, openId);
+        return Result.handle(saved);
     }
 
 
