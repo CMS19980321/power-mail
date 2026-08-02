@@ -1,5 +1,6 @@
 package com.hncu.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hncu.domain.MemberAddr;
@@ -11,6 +12,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -61,15 +63,39 @@ public class MemberAddrServiceImpl extends ServiceImpl<MemberAddrMapper, MemberA
     @Override
     @CacheEvict(key = "#openId")
     public Boolean modifyMemberAddrInfo(MemberAddr memberAddr, String openId) {
-        return null;
+        memberAddr.setUpdateTime(new Date());
+        return memberAddrMapper.updateById(memberAddr) > 0;
     }
 
     @Override
     @CacheEvict(key = "#openId")
     @Transactional(rollbackFor = Exception.class)
     public Boolean removeMemberAddrById(Long addrId, String openId) {
+        //根据收货地址查询id查询收货地址对象
+        MemberAddr memberAddr = memberAddrMapper.selectById(addrId);
+        //判断该地址是否为默认收货地址
+        if (memberAddr.getCommonAddr().equals(1)) {
+            //当前删除的地址是会员的默认收货地址，重新获取一个最近新增的地址作为默认收货地址
+            //根据会员openId查询会员非默认收货地址
+            List<MemberAddr> memberAddrs = memberAddrMapper.selectList(new LambdaQueryWrapper<MemberAddr>()
+                    .eq(MemberAddr::getOpenId,openId)
+                    .eq(MemberAddr::getCommonAddr,0)
+                    .orderByDesc(MemberAddr::getCreateTime)
+            );
+            //判断非默认收货地址是否有值
+            if (CollectionUtil.isNotEmpty(memberAddrs)) {
+                //会员有非默认的收货地址,获取第一个地址设置为新的默认收货地址
+                MemberAddr newDefaultMemberAddr = memberAddrs.get(0);
+                newDefaultMemberAddr.setCommonAddr(1);
+                newDefaultMemberAddr.setUpdateTime(new Date());
+                memberAddrMapper.updateById(newDefaultMemberAddr);
+            }
 
-        return null;
+        }
+        //删除当前地址
+        //1.当前地址是非默认的收货地址，直接删除
+        //2.当前地址不是非默认的收货地址,经过上面判断该地址是否为默认收货地址逻辑后也可以直接删除
+        return memberAddrMapper.deleteById(addrId) > 0;
     }
 
     @Override
