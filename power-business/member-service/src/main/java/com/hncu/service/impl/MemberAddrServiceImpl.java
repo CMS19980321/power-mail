@@ -102,8 +102,27 @@ public class MemberAddrServiceImpl extends ServiceImpl<MemberAddrMapper, MemberA
     @CacheEvict(key = "#openId")
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyMemberDefaultAddr(String openId, Long newAddrId) {
+        //根据收货地址标识查询收货地址对象
+        MemberAddr newDefaultMemberAddr = memberAddrMapper.selectById(newAddrId);
+        //判断新的默认收货地址是否为原来的默认收货地址
+        if (newDefaultMemberAddr.getCommonAddr().equals(1)) {
+            //是，结束
+            return true;
+        }
+        //不是,将原来的默认收货地址改为非默认，并更新当前新的默认收货地址
+        //将会员原有的收货地址改为非默认
+        MemberAddr oldDefaultMemberAddr = new MemberAddr();
+        oldDefaultMemberAddr.setCommonAddr(0);
+        oldDefaultMemberAddr.setUpdateTime(new Date());
+        memberAddrMapper.update(oldDefaultMemberAddr,new LambdaQueryWrapper<MemberAddr>()
+                .eq(MemberAddr::getOpenId,openId)
+        );
+        //将当前地址设置为新的默认收货地址
+        newDefaultMemberAddr.setCommonAddr(1);
+        newDefaultMemberAddr.setUpdateTime(new Date());
+
+        return memberAddrMapper.updateById(newDefaultMemberAddr) > 0;
 
 
-        return null;
     }
 }
