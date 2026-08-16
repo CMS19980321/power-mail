@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/5/3 19:53
@@ -102,4 +104,42 @@ public class NoticeController {
         boolean removed = noticeService.removeById(noticeId);
         return Result.handle(removed);
     }
+
+    //////////微信小程序数据接口///////////
+
+    /**
+     * 查询小程序置顶公告列表
+     * @return
+     */
+    @ApiOperation("查询小程序置顶公告列表")
+    @GetMapping("topNoticeList")
+    public Result<List<Notice>> loadWxTopNoticeList(){
+        List<Notice> notices = noticeService.queryWxTopNoticeList();
+        return Result.success(notices);
+    }
+
+    /**
+     * 查询小程序所有公告列表
+     * @return
+     */
+    @ApiOperation("查询小程序所有公告列表")
+    @GetMapping("noticeList")
+    public Result<List<Notice>> loadWXAllNoticeList(){
+        List<Notice> notices = noticeService.queryWxAllNoticeList();
+        return Result.success(notices);
+    }
+
+    /**
+     * 根据标识查询公告详情
+     * @param noticeId
+     * @return
+     */
+    @ApiOperation("根据标识查询公告详情")
+    @GetMapping("detail/{noticeId}")
+    public Result<Notice> loadWxNoticeInfo(@PathVariable Long noticeId){
+        Notice notice = noticeService.getById(noticeId);
+        return Result.success(notice);
+    }
+
+
 }

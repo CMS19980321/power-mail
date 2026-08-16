@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: search-service
+  cloud:
+    nacos:
+      server-addr: 192.168.194.147:8848
+      username: nacos
+      password:  nacos
+      discovery:
+        namespace: 4f22dcd4-713f-4c84-9ba1-e43ebd32cd88
+        group: A_GROUP
+        service: ${spring.application.name}
+      config:
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+        group: ${spring.cloud.nacos.discovery.group}
+        prefix: ${spring.application.name}
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
+##############nacos远程配置中心内容##################
+server:
+  port: 8086
+swagger3:
+  base-package: com.hncu.controller
+  name: hncu
+  url: https://www.hncu.com
+  email: hncu@126.com
+  title: 商城用户购物系统统-收缩业务管理模块接口
+  description: 实现后台管理系统的所有接口,根路径/search-service
+  license: hncu
+  licenseUrl: https://www.hncu.com
+  terms-of-service-url: https://www.hncu.com
+  version: 1.0
+
+

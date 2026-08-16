@@ -92,6 +92,11 @@ public class MemberAddrController {
         return Result.handle(removed);
     }
 
+    /**
+     *
+     * @param newAddrId 新默认收货地址Id
+     * @return
+     */
     @ApiOperation("会员设置默认收货地址")
     @PutMapping("defaultAddr/{newAddrId}")
     public Result<String> modifyMemberDefaultAddr(@PathVariable Long newAddrId){

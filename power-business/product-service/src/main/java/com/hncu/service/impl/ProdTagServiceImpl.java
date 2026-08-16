@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -26,7 +27,10 @@ public class ProdTagServiceImpl extends ServiceImpl<ProdTagMapper, ProdTag> impl
 
 
     @Override
-    @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY)
+    @Caching(evict = {
+            @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY),
+            @CacheEvict(key = ProductConstant.WX_PROD_TAG)
+    })
     public Boolean saveProdTag(ProdTag prodTag) {
         prodTag.setCreateTime(new Date());
         prodTag.setUpdateTime(new Date());
@@ -34,14 +38,20 @@ public class ProdTagServiceImpl extends ServiceImpl<ProdTagMapper, ProdTag> impl
     }
 
     @Override
-    @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY)
+    @Caching(evict = {
+            @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY),
+            @CacheEvict(key = ProductConstant.WX_PROD_TAG)
+    })
     public Boolean modifyProdTag(ProdTag prodTag) {
         prodTag.setUpdateTime(new Date());
         return prodTagMapper.updateById(prodTag) > 0;
     }
 
     @Override
-    @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY)
+    @Caching(evict = {
+            @CacheEvict(key = ProductConstant.PROD_TAG_NORMAL_KEY),
+            @CacheEvict(key = ProductConstant.WX_PROD_TAG)
+    })
     public boolean removeById(Serializable id) {
         return super.removeById(id);
     }
@@ -57,7 +67,11 @@ public class ProdTagServiceImpl extends ServiceImpl<ProdTagMapper, ProdTag> impl
     }
 
     @Override
+    @Cacheable(key = ProductConstant.WX_PROD_TAG)
     public List<ProdTag> queryWxProdTagList() {
-        return null;
+        return prodTagMapper.selectList(new LambdaQueryWrapper<ProdTag>()
+                .eq(ProdTag::getStatus,1)
+                .orderByDesc(ProdTag::getSeq)
+        );
     }
 }

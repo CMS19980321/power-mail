@@ -38,4 +38,6 @@ public interface ProductConstant {
      * 商品属性数据存放到redis中的key
      */
     String PROP_PROD_KEY = "'prodProp'";
+
+    String WX_PROD_TAG = "'wxProdTag'";
 }

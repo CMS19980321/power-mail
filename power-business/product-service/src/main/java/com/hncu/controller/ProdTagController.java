@@ -120,4 +120,12 @@ public class ProdTagController {
         List<ProdTag> prodTags = prodTagService.queryProdTagList();
         return Result.success(prodTags);
     }
+
+    ///////////////卫星小程序数据接口//////////////////
+    @ApiOperation("查询小程序商品分组标签")
+    @GetMapping("prodTagList")
+    public Result<List<ProdTag>> loadWXProdTagList(){
+        List<ProdTag> prodTags = prodTagService.queryWxProdTagList();
+        return Result.success(prodTags);
+    }
 }

@@ -21,6 +21,7 @@
         <module>power-common</module>
         <module>power-business/store-service</module>
         <module>power-business/order-service</module>
+        <module>power-business/search-service</module>
     </modules>
 
     <properties>

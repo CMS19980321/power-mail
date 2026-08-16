@@ -106,4 +106,14 @@ public class IndexImgController {
         Boolean removed = indexImgService.removeIndexImgByIds(imgIds);
         return Result.handle(removed);
     }
+
+    ////////////////////微信小程序，数据接口////////////////////////
+
+    @ApiOperation("查询小程序轮播图列表")
+    @GetMapping("indexImgs")
+    public Result<List<IndexImg>> loadWxIndexImgList(){
+        List<IndexImg> indexImgs = indexImgService.queryWxIndexImgList();
+        return Result.success(indexImgs);
+    }
+
 }

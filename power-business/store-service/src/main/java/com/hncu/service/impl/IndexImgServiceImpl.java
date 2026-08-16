@@ -1,8 +1,10 @@
 package com.hncu.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hncu.constant.BusinessEnum;
+import com.hncu.constant.StoreConstants;
 import com.hncu.domain.IndexImg;
 import com.hncu.domain.Prod;
 import com.hncu.ex.handler.BusinessException;
@@ -12,6 +14,8 @@ import com.hncu.model.Result;
 import com.hncu.service.IndexImgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -32,6 +36,7 @@ public class IndexImgServiceImpl extends ServiceImpl<IndexImgMapper, IndexImg> i
 
 
     @Override
+    @CacheEvict(StoreConstants.WX_INDEX_IMG_KEY)
     public Boolean saveIndexImg(IndexImg indexImg) {
         indexImg.setShopId(1L);
         indexImg.setCreateTime(new Date());
@@ -79,17 +84,27 @@ public class IndexImgServiceImpl extends ServiceImpl<IndexImgMapper, IndexImg> i
     }
 
     @Override
+    @CacheEvict(StoreConstants.WX_INDEX_IMG_KEY)
     public Boolean modifyIndexImg(IndexImg indexImg) {
         return indexImgMapper.updateById(indexImg) > 0;
     }
 
     @Override
+    @CacheEvict(StoreConstants.WX_INDEX_IMG_KEY)
     public Boolean removeIndexImgByIds(List<Long> imgIds) {
         return indexImgMapper.deleteBatchIds(imgIds) ==  imgIds.size();
     }
 
     @Override
+    @Cacheable(key = StoreConstants.WX_INDEX_IMG_KEY)
     public List<IndexImg> queryWxIndexImgList() {
-        return null;
+        return indexImgMapper.selectList(new LambdaQueryWrapper<IndexImg>()
+                .eq(IndexImg::getStatus,1)
+                .orderByDesc(IndexImg::getDes)
+        );
     }
+
+
+
+
 }
