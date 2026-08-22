@@ -85,10 +85,10 @@
             <artifactId>common-base</artifactId>
         </dependency>
         <!--sentinel依赖-->
-        <!--<dependency>
+        <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
 
