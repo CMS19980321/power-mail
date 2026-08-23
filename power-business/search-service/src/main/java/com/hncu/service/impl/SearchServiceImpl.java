@@ -3,7 +3,9 @@ package com.hncu.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.Prod;
 import com.hncu.domain.ProdTagReference;
+import com.hncu.feign.SearchProdFeign;
 import com.hncu.service.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.List;
  */
 @Service
 public class SearchServiceImpl implements SearchService {
+
+
+    @Autowired
+    private SearchProdFeign searchProdFeign;
     
     @Override
     public Page<Prod> queryWxProdPageByTagId(Long current, Long size, Long tagId) {

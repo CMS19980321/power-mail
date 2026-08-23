@@ -4,7 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.ProdTag;
+import com.hncu.domain.ProdTagReference;
 import com.hncu.model.Result;
+import com.hncu.service.ProdTagReferenceService;
 import com.hncu.service.ProdTagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,9 @@ import java.util.List;
 public class ProdTagController {
     @Autowired
     private ProdTagService prodTagService;
+
+    @Autowired
+    private ProdTagReferenceService prodTagReferenceService;
 
     /**
      * 多条件分页查询分组标签
@@ -127,5 +132,18 @@ public class ProdTagController {
     public Result<List<ProdTag>> loadWXProdTagList(){
         List<ProdTag> prodTags = prodTagService.queryWxProdTagList();
         return Result.success(prodTags);
+    }
+
+    //////////////feign接口////////////////////
+    public Result<Page<ProdTagReference>> getProdTagReferencePageTagId(@RequestParam Long current,
+                                                                @RequestParam Long size,
+                                                                @RequestParam Long tagId){
+        Page<ProdTagReference> prodTagReferencePage = new Page<>(current, size);
+        //根据分页标识分页查询商品与分组标签关系记录
+        prodTagReferencePage = prodTagReferenceService.page(prodTagReferencePage,new LambdaQueryWrapper<ProdTagReference>()
+                .eq(ProdTagReference::getTagId,tagId)
+                .orderByDesc(ProdTagReference::getCreateTime)
+        );
+        return Result.success(prodTagReferencePage);
     }
 }
