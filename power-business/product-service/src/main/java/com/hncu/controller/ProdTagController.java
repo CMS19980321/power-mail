@@ -135,6 +135,7 @@ public class ProdTagController {
     }
 
     //////////////feign接口////////////////////
+    @GetMapping("getProdTagReferencePageByTagId")
     public Result<Page<ProdTagReference>> getProdTagReferencePageTagId(@RequestParam Long current,
                                                                 @RequestParam Long size,
                                                                 @RequestParam Long tagId){
