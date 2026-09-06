@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     @Caching(evict = {
             @CacheEvict(key = ProductConstant.FIRST_CATEGORY_LIST_KEY),
-            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY)
+            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY),
+            @CacheEvict(key = ProductConstant.WX_FIRST_CATEGORY)
     })
     public Boolean saveCategory(Category category) {
         category.setCreateTime(new Date());
@@ -64,7 +66,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     @Caching(evict = {
             @CacheEvict(key = ProductConstant.FIRST_CATEGORY_LIST_KEY),
-            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY)
+            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY),
+            @CacheEvict(key = ProductConstant.WX_FIRST_CATEGORY)
     })
     public Boolean modifyCategory(Category category) {
         //获取修改后的pid
@@ -102,7 +105,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Caching(evict = {
             @CacheEvict(key = ProductConstant.FIRST_CATEGORY_LIST_KEY),
-            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY)
+            @CacheEvict(key = ProductConstant.ALL_CATEGORY_LIST_KEY),
+            @CacheEvict(key = ProductConstant.WX_FIRST_CATEGORY)
     })
     @Override
     public Boolean removeCategoryById(Long categoryId) {
@@ -117,7 +121,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> queryWxCategoryListByPid(Long pid) {
-        return null;
+    @Cacheable(key = ProductConstant.WX_FIRST_CATEGORY)
+    public List<Category> queryWxCategoryListByPid(Long parentId) {
+        return categoryMapper.selectList( new LambdaQueryWrapper<Category>()
+                .eq(Category::getStatus,1)
+                .eq(Category::getParentId,parentId)
+                .orderByDesc(Category::getSeq)
+        );
     }
 }

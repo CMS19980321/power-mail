@@ -39,5 +39,15 @@ public interface ProductConstant {
      */
     String PROP_PROD_KEY = "'prodProp'";
 
+    /*
+    * 小程序:分组标签数据存放到redis中的key
+    * */
     String WX_PROD_TAG = "'wxProdTag'";
+
+    /*
+     * 小程序:商品一级类目存放到redis中的key
+     * */
+    String WX_FIRST_CATEGORY = "'wxFirstCategory'";
+
+
 }

@@ -3,6 +3,7 @@ package com.hncu.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.constant.BusinessEnum;
+import com.hncu.domain.Category;
 import com.hncu.domain.Prod;
 import com.hncu.domain.ProdProp;
 import com.hncu.domain.ProdTagReference;
@@ -13,6 +14,7 @@ import com.hncu.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +73,23 @@ public class SearchServiceImpl implements SearchService {
      */
     @Override
     public List<Prod> queryWxProdListByCategoryId(Long categoryId) {
-
+        List<Long> allCategoryIds = new ArrayList<>();
+        allCategoryIds.add(categoryId);
+        //远程调用:商品一级商品类目id查询子类目集合
+        Result<List<Category>> categoryResult = searchProdFeign.getCategoryListByParentId(categoryId);
+        //判断是否操作成功
+        if (categoryResult.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new BusinessException("远程调用失败:根据商品一级类目id查询子类目集合");
+        }
+        //获取数据
+        List<Category> categoryList = categoryResult.getData();
+        //判断子类目是否有值
+        if (CollectionUtil.isNotEmpty(categoryList)) {
+            //从子类目集合中获取类目Id集合
+            List<Long> collectIdList = categoryList.stream().map(Category::getCategoryId).collect(Collectors.toList());
+            allCategoryIds.addAll(collectIdList);
+        }
+        //根据产品类目Id集合查询商品对象集合
         return null;
     }
 }

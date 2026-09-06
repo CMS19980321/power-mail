@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/8/22 20:29
@@ -43,5 +45,13 @@ public class SearchController {
                                                     ){
         Page<Prod> page = searchService.queryWxProdPageByTagId(current, size, tagId);
         return Result.success(page);
+    }
+
+    @ApiOperation("根据商品类目标识查询商品集合")
+    @GetMapping("prod/category/prod/list")
+    public Result<List<Prod>> loadWxProdListByCategoryId(@RequestParam Long categoryId){
+        //根据商品类目标识查询商品集合
+        List<Prod> prods = searchService.queryWxProdListByCategoryId(categoryId);
+        return Result.success(prods);
     }
 }

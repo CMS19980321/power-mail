@@ -3,6 +3,7 @@ package com.hncu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hncu.domain.Category;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -44,8 +45,8 @@ public interface CategoryService extends IService<Category> {
 
     /**
      * 查询小程序中商品的一级类目集合
-     * @param pid
+     * @param parentId
      * @return
      */
-    List<Category> queryWxCategoryListByPid(Long pid);
+    List<Category> queryWxCategoryListByPid(Long parentId);
 }

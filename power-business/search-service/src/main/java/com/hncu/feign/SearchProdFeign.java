@@ -1,6 +1,7 @@
 package com.hncu.feign;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.Category;
 import com.hncu.domain.Prod;
 import com.hncu.domain.ProdTagReference;
 import com.hncu.feign.sentinel.SearchProdFeignSentinel;
@@ -30,4 +31,7 @@ public interface SearchProdFeign {
 
     @GetMapping("prod/prod/getProdListByIds")
     Result<List<Prod>> getProdListByIds(@RequestParam List<Long> prodIdList);
+
+    @GetMapping("prod/category/getCategoryListByParentId")
+    Result<List<Category>> getCategoryListByParentId(@RequestParam Long parentId);
 }

@@ -1,5 +1,6 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hncu.domain.Category;
 import com.hncu.model.Result;
 import com.hncu.service.CategoryService;
@@ -96,6 +97,29 @@ public class CategoryController {
         return Result.handle(removed);
     }
 
+    ////////////微信小程序数据接口//////////////////
+
+    /**
+     * 微信小程序中商品的一级类目集合
+     * @param parentId 父节点id
+     * @return
+     */
+    @ApiOperation("微信小程序中商品的一级类目集合")
+    @GetMapping("category/list")
+    public Result<List<Category>> loadWxCategoryList(@RequestParam Long parentId){
+        List<Category> categories = categoryService.queryWxCategoryListByPid(parentId);
+        return Result.success(categories);
+    }
+
+    ////////////////////feign接口/////////////////////
+    @GetMapping("prod/category/getCategoryListByParentId")
+    public Result<List<Category>> getCategoryListByParentId(@RequestParam Long parentId){
+        //查询商品的子类目集合
+        List<Category> list = categoryService.list(new LambdaQueryWrapper<Category>()
+                .eq(Category::getParentId, parentId));
+
+        return Result.success(list);
+    };
 
 
 }
