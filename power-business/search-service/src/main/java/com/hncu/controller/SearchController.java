@@ -47,6 +47,11 @@ public class SearchController {
         return Result.success(page);
     }
 
+    /**
+     * 根据商品类目标识查询商品集合
+     * @param categoryId
+     * @return
+     */
     @ApiOperation("根据商品类目标识查询商品集合")
     @GetMapping("prod/category/prod/list")
     public Result<List<Prod>> loadWxProdListByCategoryId(@RequestParam Long categoryId){

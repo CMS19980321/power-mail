@@ -3,6 +3,7 @@ package com.hncu.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.Category;
 import com.hncu.domain.Prod;
 import com.hncu.model.Result;
 import com.hncu.service.ProdService;
@@ -112,5 +113,14 @@ public class ProdController {
         List<Prod> prods = prodService.listByIds(prodIdList);
         return Result.success(prods);
     };
+
+    @GetMapping("getProdListByCategoryIds")
+    Result<List<Prod>> getProdListByCategoryIds(@RequestParam List<Long> categoryIds){
+        List<Prod> prods = prodService.list(new LambdaQueryWrapper<Prod>()
+                .in(Prod::getCategoryId, categoryIds)
+        );
+        return Result.success(prods);
+    };
+
 
 }

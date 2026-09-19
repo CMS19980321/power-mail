@@ -112,7 +112,7 @@ public class CategoryController {
     }
 
     ////////////////////feign接口/////////////////////
-    @GetMapping("prod/category/getCategoryListByParentId")
+    @GetMapping("getCategoryListByParentId")
     public Result<List<Category>> getCategoryListByParentId(@RequestParam Long parentId){
         //查询商品的子类目集合
         List<Category> list = categoryService.list(new LambdaQueryWrapper<Category>()

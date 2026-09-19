@@ -34,4 +34,9 @@ public interface SearchProdFeign {
 
     @GetMapping("prod/category/getCategoryListByParentId")
     Result<List<Category>> getCategoryListByParentId(@RequestParam Long parentId);
+
+    @GetMapping("prod/prod/getProdListByCategoryIds")
+    Result<List<Prod>> getProdListByCategoryIds(@RequestParam List<Long> categoryIds);
+
+
 }

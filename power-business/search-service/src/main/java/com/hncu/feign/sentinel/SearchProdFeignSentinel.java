@@ -39,4 +39,10 @@ public class SearchProdFeignSentinel implements SearchProdFeign {
         log.error("远程调用失败:根据商品一级商品类目id查询子类目集合");
         return null;
     }
+
+    @Override
+    public Result<List<Prod>> getProdListByCategoryIds(List<Long> categoryIds) {
+        log.error("远程调用失败:根据产品类目Id集合查询商品对象集合");
+        return null;
+    }
 }

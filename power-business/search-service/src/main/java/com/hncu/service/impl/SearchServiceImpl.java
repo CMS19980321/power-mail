@@ -90,6 +90,13 @@ public class SearchServiceImpl implements SearchService {
             allCategoryIds.addAll(collectIdList);
         }
         //根据产品类目Id集合查询商品对象集合
-        return null;
+        Result<List<Prod>> prodList = searchProdFeign.getProdListByCategoryIds(allCategoryIds);
+        //判断查询结果
+        if (prodList.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new RuntimeException("远程调用失败:根据产品类目Id集合查询商品对象集合");
+        }
+        //获取数据
+        List<Prod> prods = prodList.getData();
+        return prods;
     }
 }
