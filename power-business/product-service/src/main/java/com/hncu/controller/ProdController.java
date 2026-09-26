@@ -122,5 +122,20 @@ public class ProdController {
         return Result.success(prods);
     };
 
+    /////////////微信小程序接口///////////////
+
+    /**
+     * 小程序根据商品标识查询商品详情
+     * @param prodId 商品标识Id
+     * @return
+     */
+    @ApiOperation("小程序根据商品标识查询商品详情")
+    @GetMapping("prod/prodInfo")
+    public Result<Prod> loadWxProdInfo(@RequestParam Long prodId){
+        //根据商品标识查询商品详情
+        Prod prod = prodService.queryWxProdInfoByProdId(prodId);
+        return Result.success(prod);
+    }
+
 
 }

@@ -192,6 +192,14 @@ public class ProdServiceImpl extends ServiceImpl<ProdMapper, Prod> implements Pr
 
     @Override
     public Prod queryWxProdInfoByProdId(Long prodId) {
-        return null;
+        //根据商品标识查询商品信息
+        Prod prod = prodMapper.selectById(prodId);
+        //根据商品标识查询商品sku信息
+        List<Sku> skus = skuMapper.selectList(new LambdaQueryWrapper<Sku>()
+                .eq(Sku::getProdId, prodId)
+        );
+
+        prod.setSkuList(skus);
+        return prod;
     }
 }

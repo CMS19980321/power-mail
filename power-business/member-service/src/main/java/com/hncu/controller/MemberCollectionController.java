@@ -1,10 +1,13 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hncu.domain.MemberCollection;
 import com.hncu.domain.Prod;
 import com.hncu.model.Result;
 import com.hncu.service.MemberCollectionService;
 import com.hncu.util.AuthUtils;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +52,22 @@ public class MemberCollectionController {
         //通过会员openId分页查询会员收藏列表
         Page<Prod> page = memberCollectionService.queryMemberCollectionProdPageByOpenId(AuthUtils.getMemberOpenId(),current,size);
         return Result.success(page);
+    }
+
+    /////////////////////微信小程序接口////////////////////////
+
+    /**
+     * 小程序查询会员收藏商品状态
+     * @param prodId 商品标识
+     * @return
+     */
+    @ApiOperation("小程序查询会员收藏商品状态")
+    @GetMapping("isCollection")
+    public Result<Boolean> loadMemberIsCollection(@RequestParam Long prodId){
+        long count = memberCollectionService.count(new LambdaQueryWrapper<MemberCollection>()
+                .eq(MemberCollection::getOpenId, AuthUtils.getMemberOpenId())
+                .eq(MemberCollection::getProdId, prodId)
+        );
+        return Result.success(count == 1);
     }
 }
