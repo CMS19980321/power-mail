@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.ProdComm;
 import com.hncu.model.Result;
 import com.hncu.service.ProdCommService;
+import com.hncu.vo.ProdCommData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +73,13 @@ public class ProdCommController {
     public Result<String> replayAndExamineProdComm(@RequestBody ProdComm prodComm){
         Boolean flag = prodCommService.replayAndExamineProdComm(prodComm);
         return Result.success(null);
+    }
+
+    ////////////////微信小程序数据接口//////////////////
+    @ApiOperation("小程序查询评论总览信息")
+    @GetMapping("prodComm/prodCommData")
+    public Result<ProdCommData> loadWxProdCommData(@RequestParam Long prodId){
+        ProdCommData prodCommData = prodCommService.queryWxProdCommDataByProdId(prodId);
+        return Result.success(prodCommData);
     }
 }

@@ -1,5 +1,6 @@
 package com.hncu.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,21 @@ public class MemberCollectionServiceImpl extends ServiceImpl<MemberCollectionMap
 
     @Override
     public Boolean addOrCancelMemberCollection(String openId, Long prodId) {
-        return null;
+        //根据会员openId与商品Id查询收藏记录
+        MemberCollection memberCollection = memberCollectionMapper.selectOne(new LambdaQueryWrapper<MemberCollection>()
+                .eq(MemberCollection::getOpenId, openId)
+                .eq(MemberCollection::getProdId, prodId)
+        );
+        //判断收藏记录是否存在
+        if (ObjectUtil.isNull(memberCollection)) {
+            //为空，说明当前商品没有被收藏 -> 将当前商品添加到收藏记录
+            memberCollection = new MemberCollection();
+            memberCollection.setCreateTime(new Date());
+            memberCollection.setProdId(prodId);
+            memberCollection.setOpenId(openId);
+            return memberCollectionMapper.insert(memberCollection) > 0;
+        }
+        //不为空，说明当前商品已经被收藏 -> 将当前商品取消收藏记录
+        return memberCollectionMapper.deleteById(memberCollection.getId()) > 0;
     }
 }

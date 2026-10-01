@@ -12,10 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author caimeisahng
@@ -70,4 +67,13 @@ public class MemberCollectionController {
         );
         return Result.success(count == 1);
     }
+
+
+    @ApiOperation("添加或取消收藏商品")
+    @PostMapping("addOrCancel")
+    public Result<String> addOrCancelMemberCollection(@RequestBody Long prodId){
+        Boolean flag = memberCollectionService.addOrCancelMemberCollection(AuthUtils.getMemberOpenId(), prodId);
+        return Result.handle(flag);
+    }
+
 }
