@@ -82,4 +82,15 @@ public class ProdCommController {
         ProdCommData prodCommData = prodCommService.queryWxProdCommDataByProdId(prodId);
         return Result.success(prodCommData);
     }
+
+    @ApiOperation("小程序分页查询单个商品评论列表")
+    @GetMapping("prodComm/prodCommPageByProd")
+    public Result<Page<ProdComm>> loadWxProdCommPageByProd(@RequestParam Long current,
+                                                         @RequestParam Long size,
+                                                         @RequestParam Long prodId,
+                                                         @RequestParam Long evaluate
+                                                         ){
+        Page<ProdComm> page = prodCommService.queryWxProdCommPageByProd(current,size,prodId,evaluate);
+        return Result.success(page);
+    }
 }
