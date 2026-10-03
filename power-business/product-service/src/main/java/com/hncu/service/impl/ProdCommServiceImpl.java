@@ -3,8 +3,13 @@ package com.hncu.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hncu.constant.BusinessEnum;
+import com.hncu.domain.Member;
 import com.hncu.domain.ProdComm;
+import com.hncu.ex.handler.BusinessException;
+import com.hncu.feign.ProdMemberFeign;
 import com.hncu.mapper.ProdCommMapper;
+import com.hncu.model.Result;
 import com.hncu.service.ProdCommService;
 import com.hncu.vo.ProdCommData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,9 @@ public class ProdCommServiceImpl extends ServiceImpl<ProdCommMapper, ProdComm> i
 
     @Autowired
     private ProdCommMapper prodCommMapper;
+
+    @Autowired
+    private ProdMemberFeign prodMemberFeign;
 
 
     @Override
@@ -111,6 +119,25 @@ public class ProdCommServiceImpl extends ServiceImpl<ProdCommMapper, ProdComm> i
         //从商品评论列表中获取会员OpenId集合
         List<String> openIdList = prodCommList.stream().map(ProdComm::getOpenId).collect(Collectors.toList());
         //远程调用:根据会员openId查询会员对象集合
+        Result<List<Member>> result = prodMemberFeign.getMemberListByOpenIds(openIdList);
+        //判断操作结果
+        if (result.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new BusinessException("远程调用:根据会员OpenId集合查询会员对象集合失败");
+        }
+        //获取数据
+        List<Member> memberList = result.getData();
+        //循环遍历评论集合
+        prodCommList.forEach(prodComm -> {
+            //从会员对象集合中过滤出与当前会员评论对象openId一致的 一个 会员对象
+            Member member = memberList
+                    .stream()
+                    .filter(m -> m.getOpenId().equals(prodComm.getOpenId()))
+                    .collect(Collectors.toList()).get(0);
+
+
+
+        });
+
 
         return page;
     }

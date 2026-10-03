@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author caimeisahng
  * @Date 2026/6/28 20:32
@@ -55,5 +57,15 @@ public class MemberController {
         );
 
         return Result.success(StringUtils.hasText(member.getUserMobile()));
+    }
+
+    //////////////feign接口//////////////////
+    @GetMapping("getMemberListByOpenIds")
+    public  Result<List<Member>> getMemberListByOpenIds(@RequestParam List<String> openIds){
+        List<Member> members = memberService.list(new LambdaQueryWrapper<Member>()
+                .in(Member::getOpenId, openIds)
+        );
+
+        return Result.success(members);
     }
 }
