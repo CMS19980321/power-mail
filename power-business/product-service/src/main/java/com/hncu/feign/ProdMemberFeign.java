@@ -1,6 +1,7 @@
 package com.hncu.feign;
 
 import com.hncu.domain.Member;
+import com.hncu.feign.sentinel.ProdMemberFeignSentinel;
 import com.hncu.model.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.util.List;
  * @Version 1.0
  * 产品业务模块调用会员业务模块:feign接口
  */
-@FeignClient(value = "product-service")
+@FeignClient(value = "member-service",fallback = ProdMemberFeignSentinel.class)
 @Component
 public interface ProdMemberFeign {
     @GetMapping("p/user/getMemberListByOpenIds")

@@ -83,6 +83,14 @@ public class ProdCommController {
         return Result.success(prodCommData);
     }
 
+    /**
+     * 小程序分页查询单个商品评论列表
+     * @param current 当前页
+     * @param size 每页显示条数
+     * @param prodId 商品id
+     * @param evaluate 评论级别
+     * @return
+     */
     @ApiOperation("小程序分页查询单个商品评论列表")
     @GetMapping("prodComm/prodCommPageByProd")
     public Result<Page<ProdComm>> loadWxProdCommPageByProd(@RequestParam Long current,

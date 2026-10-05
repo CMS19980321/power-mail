@@ -1,0 +1,22 @@
+package com.hncu;
+
+import com.sun.glass.ui.Application;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
+
+/**
+ * @Author caimeisahng
+ * @Date 2026/10/4 20:46
+ * @Version 1.0
+ * 购物车业务模块启动类
+ */
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class CartServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(CartServiceApplication.class,args);
+    }
+}

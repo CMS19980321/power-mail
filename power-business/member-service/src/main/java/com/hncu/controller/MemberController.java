@@ -60,6 +60,7 @@ public class MemberController {
     }
 
     //////////////feign接口//////////////////
+
     @GetMapping("getMemberListByOpenIds")
     public  Result<List<Member>> getMemberListByOpenIds(@RequestParam List<String> openIds){
         List<Member> members = memberService.list(new LambdaQueryWrapper<Member>()

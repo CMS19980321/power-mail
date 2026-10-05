@@ -133,8 +133,11 @@ public class ProdCommServiceImpl extends ServiceImpl<ProdCommMapper, ProdComm> i
                     .stream()
                     .filter(m -> m.getOpenId().equals(prodComm.getOpenId()))
                     .collect(Collectors.toList()).get(0);
-
-
+            //将会员昵称进行脱敏操作
+            StringBuffer stringBuffer = new StringBuffer(member.getNickName());
+            StringBuffer replacedNickName= stringBuffer.replace(1, stringBuffer.length() - 1, "xxx");
+            prodComm.setNickName(replacedNickName.toString());
+            prodComm.setPic(member.getPic());
 
         });
 
