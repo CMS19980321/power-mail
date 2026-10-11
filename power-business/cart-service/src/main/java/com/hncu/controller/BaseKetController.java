@@ -3,6 +3,7 @@ package com.hncu.controller;
 import com.hncu.model.Result;
 import com.hncu.service.BasketService;
 import com.hncu.util.AuthUtils;
+import com.hncu.vo.CartVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,12 @@ public class BaseKetController {
         String openId = AuthUtils.getMemberOpenId();
         Integer count = basketService.queryMemberBasketProdCount(openId);
         return Result.success(count);
+    }
+
+    @ApiOperation("查询会员购物车数据")
+    @GetMapping("info")
+    public Result<CartVo> loadMemberCartVo(){
+        CartVo cartVo = basketService.queryMemberVo();
+        return Result.success(cartVo);
     }
 }

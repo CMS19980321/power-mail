@@ -2,6 +2,8 @@ package com.hncu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hncu.domain.Basket;
+import com.hncu.vo.CartVo;
+
 public interface BasketService extends IService<Basket>{
 
 
@@ -18,4 +20,6 @@ public interface BasketService extends IService<Basket>{
      * @return
      */
     Boolean changeCartItem(Basket basket);
+
+    CartVo queryMemberVo();
 }
