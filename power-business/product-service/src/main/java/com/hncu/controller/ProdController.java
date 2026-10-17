@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.Category;
 import com.hncu.domain.Prod;
+import com.hncu.domain.Sku;
 import com.hncu.model.Result;
 import com.hncu.service.ProdService;
+import com.hncu.service.SkuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -30,6 +33,9 @@ public class ProdController {
 
     @Autowired
     private ProdService prodService;
+
+    @Autowired
+    private SkuService skuService;
 
     /**
      *
@@ -120,6 +126,13 @@ public class ProdController {
                 .in(Prod::getCategoryId, categoryIds)
         );
         return Result.success(prods);
+    };
+
+    @GetMapping("getSkuListBySkuIDs")
+    public Result<List<Sku>> getSKuListBySkuIds(@RequestParam List<Long> skuIds){
+        List<Sku> skuList = skuService.listByIds(skuIds);
+
+        return Result.success(skuList);
     };
 
     /////////////微信小程序接口///////////////

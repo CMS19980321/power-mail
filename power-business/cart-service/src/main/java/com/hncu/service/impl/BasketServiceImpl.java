@@ -65,7 +65,8 @@ public class BasketServiceImpl extends ServiceImpl<BasketMapper, Basket> impleme
             return cartVo;
         }
         //从购物车记录集合中获取商品skuId集合
-        List<Long> skuList = basketList.stream().map(Basket::getSkuId).collect(Collectors.toList());
+        List<Long> skuIdList = basketList.stream().map(Basket::getSkuId).collect(Collectors.toList());
+        //远程调用，根据skuId结合查询上面sku对象集合
 
         //创建购物车店铺对象集合
         List<ShopCart> shopCartList =  new ArrayList<>();
