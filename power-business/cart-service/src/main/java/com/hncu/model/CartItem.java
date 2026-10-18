@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * @Author caimeisahng
  * @Date 2026/10/7 16:55
@@ -31,7 +33,7 @@ public class CartItem {
     @ApiModelProperty("商品sku名称")
     private String skuName;
     @ApiModelProperty("商品党家")
-    private String price;
+    private BigDecimal price;
     @ApiModelProperty("购物车Id")
     private Long basketId;
     @ApiModelProperty("商品购买数量")

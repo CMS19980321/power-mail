@@ -4,6 +4,7 @@ import com.hncu.domain.Sku;
 import com.hncu.feign.sentinel.BasketProdFeignSentinel;
 import com.hncu.model.Result;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,6 +18,7 @@ import java.util.List;
  */
 
 @FeignClient(value = "product-service",fallback = BasketProdFeignSentinel.class)
+@Component
 public interface BasketProdFeign {
     @GetMapping("prod/prod/getSkuListBySkuIDs")
     Result<List<Sku>> getSKuListBySkuIds(@RequestParam List<Long> skuIds);
