@@ -146,6 +146,7 @@ public class BasketServiceImpl extends ServiceImpl<BasketMapper, Basket> impleme
                 cartItem.setBasketId(basketId);
                 cartItem.setProdId(prodId);
                 cartItem.setSkuId(skuId);
+                cartItem.setProdCount(prodCount);
                 //从商品sku对象集合中获取当前当前购物车记录所对象的sku对象
                 Sku sku2 = skuList
                         .stream()
