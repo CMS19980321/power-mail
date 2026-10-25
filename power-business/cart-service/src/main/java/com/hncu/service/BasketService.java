@@ -2,7 +2,10 @@ package com.hncu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hncu.domain.Basket;
+import com.hncu.vo.CartTotalAmount;
 import com.hncu.vo.CartVo;
+
+import java.util.List;
 
 public interface BasketService extends IService<Basket>{
 
@@ -22,4 +25,6 @@ public interface BasketService extends IService<Basket>{
     Boolean changeCartItem(Basket basket);
 
     CartVo queryMemberVo();
+
+    CartTotalAmount calculateMemberCheckedBasketTotalAmount(List<Long> basketIds);
 }

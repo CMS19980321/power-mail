@@ -3,14 +3,15 @@ package com.hncu.controller;
 import com.hncu.model.Result;
 import com.hncu.service.BasketService;
 import com.hncu.util.AuthUtils;
+import com.hncu.vo.CartTotalAmount;
 import com.hncu.vo.CartVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author caimeisahng
@@ -39,5 +40,12 @@ public class BaseKetController {
     public Result<CartVo> loadMemberCartVo(){
         CartVo cartVo = basketService.queryMemberVo();
         return Result.success(cartVo);
+    }
+
+    @ApiOperation("计算会员选中的商品的金额")
+    @PostMapping("totalPay")
+    public Result<CartTotalAmount> calculateMemberCheckedBasketTotalAmount(@RequestBody List<Long> basketIds){
+        CartTotalAmount cartTotalAmount = basketService.calculateMemberCheckedBasketTotalAmount(basketIds);
+        return Result.success(cartTotalAmount);
     }
 }

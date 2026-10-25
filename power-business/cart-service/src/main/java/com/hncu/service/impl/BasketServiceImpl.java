@@ -14,12 +14,14 @@ import com.hncu.model.Result;
 import com.hncu.model.ShopCart;
 import com.hncu.service.BasketService;
 import com.hncu.util.AuthUtils;
+import com.hncu.vo.CartTotalAmount;
 import com.hncu.vo.CartVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,7 +88,7 @@ public class BasketServiceImpl extends ServiceImpl<BasketMapper, Basket> impleme
 
         //创建购物车店铺对象集合
         List<ShopCart> shopCartList =  new ArrayList<>();
-        //循环遍历，会员购物车记录集合
+        //循环遍历，获取会员购物车记录
         basketList.forEach(basket -> {
             //当前购物车所属的店铺标识
             Long shopId = basket.getShopId();
@@ -163,5 +165,64 @@ public class BasketServiceImpl extends ServiceImpl<BasketMapper, Basket> impleme
 
         cartVo.setShopCarts(shopCartList);
         return cartVo;
+    }
+
+    @Override
+    public CartTotalAmount calculateMemberCheckedBasketTotalAmount(List<Long> basketIds) {
+        //创建购物车总金额对象
+        CartTotalAmount cartTotalAmount = new CartTotalAmount();
+        //判断会员是否有选中的购物车记录
+        if (CollectionUtils.isEmpty(basketIds)) {
+            //购物车Id集合为空-->说明会员没有选中的购物车记录-->购物车商品总金额为0
+            return cartTotalAmount;
+        }
+        //购物车Id集合不为空-->说明会员没没有选中的购物车记录-->计算金额
+        //根据购物车id集合查询购物车对象集合
+        List<Basket> basketList = basketMapper.selectBatchIds(basketIds);
+        //从购物车对象集合中获取商品skuId集合
+        List<Long> skuIdList = basketList.stream().map(Basket::getSkuId).collect(Collectors.toList());
+        //远程调用，根据商品skuId集合查询商品库存sku集合
+        Result<List<Sku>> result = basketProdFeign.getSKuListBySkuIds(skuIdList);
+        //判断查询结果
+        if (result.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new RuntimeException("远程调用，根据商品skuId集合查询商品库存sku集合失败");
+        }
+        //获取返回的数据
+        List<Sku> skuList = result.getData();
+        //计算所有单个商品总金额的集合
+        ArrayList<BigDecimal> oneSkuTotalAmounts = new ArrayList<>();
+
+        //循环遍历购物车对象结合
+        basketList.forEach(basket -> {
+            //获取购物车记录的商品skuId
+            Long skuId = basket.getSkuId();
+            //获取购物车记录中商品购买的数量
+            Integer prodCount = basket.getProdCount();
+            //从商品库存sku对象集合中获取与当前购物测记录的skuId一样的商品库存sku对象
+            Sku sku2 = skuList
+                    .stream()
+                    .filter(sku -> skuId.equals(sku.getSkuId()))
+                    .collect(Collectors.toList()).get(0);
+
+            //获取商品单价
+            BigDecimal price = sku2.getPrice();
+            //及算单个商品的总金额
+            BigDecimal oneSkuTotalAmount = price.multiply(new BigDecimal(prodCount));
+            oneSkuTotalAmounts.add(oneSkuTotalAmount);
+
+        });
+        BigDecimal allSkuTotalAmount = oneSkuTotalAmounts.stream().reduce(BigDecimal::add).get();
+        //填充数据
+        cartTotalAmount.setTotalMoney(allSkuTotalAmount);
+        cartTotalAmount.setFinalMoney(allSkuTotalAmount);
+        //运费:购物测商品总金额超99元，免运费，如果小于99元，运费6元
+        //默认实现的compareTo函数
+        // -1是 allSkuTotalAmount <  99 的情况
+        if (allSkuTotalAmount.compareTo(new BigDecimal(99)) == -1) {
+            cartTotalAmount.setTransMoney(new BigDecimal(6));
+            cartTotalAmount.setFinalMoney(allSkuTotalAmount.add(new BigDecimal(6)));
+        }
+
+        return cartTotalAmount;
     }
 }
