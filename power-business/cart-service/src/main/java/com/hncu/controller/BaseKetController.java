@@ -1,5 +1,6 @@
 package com.hncu.controller;
 
+import com.hncu.domain.Basket;
 import com.hncu.model.Result;
 import com.hncu.service.BasketService;
 import com.hncu.util.AuthUtils;
@@ -47,5 +48,24 @@ public class BaseKetController {
     public Result<CartTotalAmount> calculateMemberCheckedBasketTotalAmount(@RequestBody List<Long> basketIds){
         CartTotalAmount cartTotalAmount = basketService.calculateMemberCheckedBasketTotalAmount(basketIds);
         return Result.success(cartTotalAmount);
+    }
+
+    /**
+     * 添加商品到购物车或者修改商品的数量
+     * @param basket 购物车对象(shopId,prodId,skuId,prodCount)
+     * @return
+     */
+    @ApiOperation("添加商品到购物车或者修改商品的数量")
+    @PostMapping("changeItem")
+    public Result<String> changeCartItem(@RequestBody Basket basket){
+        Boolean changed = basketService.changeCartItem(basket);
+        return Result.handle(changed);
+    }
+
+    @ApiOperation("删除会员选中的购物车记录")
+    @DeleteMapping("deleteItem")
+    public Result<String> removeMemberCheckedBasket(@RequestBody List<Long> basketIds){
+        boolean removed = basketService.removeBatchByIds(basketIds);
+        return Result.handle(removed);
     }
 }

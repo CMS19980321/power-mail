@@ -1,5 +1,6 @@
 package com.hncu.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,25 @@ public class BasketServiceImpl extends ServiceImpl<BasketMapper, Basket> impleme
 
     @Override
     public Boolean changeCartItem(Basket basket) {
-        return null;
+        //获取会员openId
+        String openId = AuthUtils.getMemberOpenId();
+        //根据会员openId和商品库存skuId查询唯的购物车记录
+        Basket beforeBasket = basketMapper.selectOne(new LambdaQueryWrapper<Basket>()
+                .eq(Basket::getOpenId, openId)
+                .eq(Basket::getSkuId, basket.getSkuId())
+        );
+        //判断购物车记录是否有值
+        if (ObjectUtil.isNotNull(beforeBasket)) {
+            //购物车记录不为空 -> 当前会员添加到购物车中的商品是存在的 -> 修改存在购物车中商品的数量
+            //计算商品的最终数量
+            int finalCount = beforeBasket.getProdCount() + basket.getProdCount();
+            beforeBasket.setProdCount(finalCount);
+            return basketMapper.updateById(beforeBasket) > 0;
+        }
+        //购物车记录为空 -> 当前会员添加到购物车中的商品是存在的 -> 添加存在购物车中商品的数量
+        basket.setCreateTime(new Date());
+        basket.setOpenId(openId);
+        return basketMapper.insert(basket) > 0;
     }
 
     @Override
