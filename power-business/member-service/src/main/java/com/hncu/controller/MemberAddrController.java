@@ -1,5 +1,6 @@
 package com.hncu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hncu.domain.MemberAddr;
 import com.hncu.model.Result;
 import com.hncu.service.MemberAddrService;
@@ -114,5 +115,14 @@ public class MemberAddrController {
     Result<MemberAddr> getMemberAddrById(@RequestParam Long addrId){
         MemberAddr addr = memberAddrService.getById(addrId);
         return Result.success(addr);
+    };
+
+    @GetMapping("p/address/getMemberDefaultAddrByOpenId")
+    public Result<MemberAddr> getMemberDefaultAddrByOpenId(@RequestParam String openId){
+        MemberAddr memberAddr = memberAddrService.getOne(new LambdaQueryWrapper<MemberAddr>()
+                .eq(MemberAddr::getOpenId, openId)
+                .eq(MemberAddr::getCommonAddr, 1)
+        );
+        return Result.success(memberAddr);
     };
 }

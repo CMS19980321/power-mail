@@ -18,6 +18,7 @@ import com.hncu.service.OrderItemService;
 import com.hncu.service.OrderService;
 import com.hncu.util.AuthUtils;
 import com.hncu.vo.OrderStatusCount;
+import com.hncu.vo.OrderVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,6 +241,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .payed(payed)
                 .consignment(consignment)
                 .build();
+    }
+
+    @Override
+    public OrderVo queryMemberOrderConformVo() {
+        //创建订单确认页面对象
+        OrderVo orderVo = new OrderVo();
+        //获取会员OpenId
+        String openId = AuthUtils.getMemberOpenId();
+        //远程调用:根据会员OpenId查询会员收货地址
+        Result<MemberAddr> result = orderMemberFeign.getMemberDefaultAddrByOpenId(openId);
+        //判断查询结构
+        if (result.getCode().equals(BusinessEnum.OPERATION_FAIL.getCode())) {
+            throw new BusinessException("远程调用:根据会员openID查询会员默认收货地址");
+        }
+
+        return orderVo;
     }
 
 

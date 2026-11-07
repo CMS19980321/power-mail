@@ -22,6 +22,12 @@ public class OrderMemberFeignSentinel implements OrderMemberFeign {
     }
 
     @Override
+    public Result<MemberAddr> getMemberDefaultAddrByOpenId(String openId) {
+        log.error("远程接口调用失败:根据openId查询会员默认收货地址");
+        return null;
+    }
+
+    @Override
     public Result<String> getNickNameByOpenId(String openId) {
         log.error("远程接口调用失败:根据会员openId查询会员昵称");
         return null;

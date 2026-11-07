@@ -2,9 +2,11 @@ package com.hncu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hncu.domain.Order;
+import com.hncu.model.OrderConfirmParam;
 import com.hncu.model.Result;
 import com.hncu.service.OrderService;
 import com.hncu.vo.OrderStatusCount;
+import com.hncu.vo.OrderVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +79,12 @@ public class OrderController {
     public Result<String> removeMemberOrder(@PathVariable String orderNumber){
         Boolean removed = orderService.removeMemberOrderByOrderNumber(orderNumber);
         return Result.handle(removed);
+    }
+
+    @ApiOperation("查询会员确认页面订单数据")
+    @PostMapping("confirm")
+    public Result<OrderVo> loadMemberOrderConfirmVo(@RequestBody OrderConfirmParam orderConfirmParam){
+        OrderVo orderVo = orderService.queryMemberOrderConformVo();
+        return Result.success(orderVo);
     }
 }
